@@ -2,7 +2,6 @@
   <div class="biblioteca-container">
     <main>
       <section class="dashboard">
-        <h2>Painel de Controle</h2>
         <div class="cards-container">
           <div class="card">
             <div class="card-icon">
@@ -51,7 +50,7 @@
       </section>
 
       <section class="acoes-rapidas">
-        <h2>Ações Rápidas</h2>
+        <h2>O que você gostaria de fazer hoje?</h2>
         <div class="botoes-container">
           <button class="btn-acao">
             <i class="fas fa-plus-circle"></i>
@@ -143,10 +142,6 @@
         <a href="#" class="ver-todos">Ver todos os empréstimos</a>
       </section>
     </main>
-
-    <footer>
-      <p>&copy; 2025 Sistema de Biblioteca Escolar - Todos os direitos reservados</p>
-    </footer>
   </div>
 </template>
 
@@ -166,17 +161,7 @@ export default {
 
 <style scoped>
 /* Estilos gerais */
-:root {
-  --cor-azul: #0047AB;
-  --cor-azul-claro: #6495ED;
-  --cor-vermelho: #B22222;
-  --cor-vermelho-claro: #DC3545;
-  --cor-branco: #FFFFFF;
-  --cor-cinza-claro: #F5F5F5;
-  --cor-cinza: #CCCCCC;
-  --cor-texto: #333333;
-}
-
+@import '../assets/base.css';
 * {
   margin: 0;
   padding: 0;
@@ -275,10 +260,9 @@ main {
 }
 
 h2 {
-  color: var(--cor-azul);
+  color: var(--cor-vermelho);
   margin-bottom: 20px;
   font-size: 1.5rem;
-  border-bottom: 2px solid var(--cor-azul);
   padding-bottom: 10px;
 }
 
@@ -331,9 +315,9 @@ h2 {
 }
 
 .btn-acao {
-  background-color: var(--cor-azul);
-  color: var(--cor-branco);
-  border: none;
+  background-image: linear-gradient(to right, #b4b4b4, #e0e0e0);
+  color: var(--black);
+  border: solid 1px var(--cor-cinza-escuro);
   padding: 15px;
   border-radius: 8px;
   cursor: pointer;
@@ -341,7 +325,7 @@ h2 {
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  transition: background-color 0.3s;
+  transition: background-image 0.3s;
 }
 
 .btn-acao i {
@@ -349,6 +333,7 @@ h2 {
 }
 
 .btn-acao:hover {
+  background-image: none;
   background-color: var(--cor-azul-claro);
 }
 

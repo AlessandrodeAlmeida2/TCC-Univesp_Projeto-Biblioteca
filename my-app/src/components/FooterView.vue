@@ -46,7 +46,7 @@ export default {
 
 <style scoped>
 .biblioteca-footer {
-  background-color: #0047AB; /* Azul */
+  background-image: linear-gradient(to bottom, #ff3737, #ac0101);
   color: white;
   padding: 0;
   width: 100%;
@@ -165,7 +165,6 @@ export default {
 }
 
 .footer-bottom {
-  background-color: #003A8C; /* Azul mais escuro */
   padding: 15px 20px;
   text-align: center;
   font-size: 0.85rem;
