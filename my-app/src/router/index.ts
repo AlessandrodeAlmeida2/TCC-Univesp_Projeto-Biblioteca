@@ -18,6 +18,31 @@ const router = createRouter({
       alias: '/home'
     },
     {
+      path: '/cadastro-aluno',
+      name: 'cadastro-aluno',
+      component: () => import('../components/CadastroAlunoView.vue')
+    },
+    {
+      path: '/editar-aluno',
+      name: 'editar-aluno',
+      component: () => import('../components/EditarAlunoView.vue'),
+    },
+    {
+      path: '/consulta-aluno',
+      name: 'consulta-aluno',
+      component: () => import('../components/ConsultaAlunoView.vue'),
+    },
+    {
+      path: '/consulta-livro',
+      name: 'consulta-livro',
+      component: () => import('../components/ConsultaLivroView.vue')
+    },
+    {
+      path: '/consulta-emprestimo',
+      name: 'consulta-emprestimo',
+      component: () => import('../components/ConsultaEmprestimoView.vue')
+    },
+    {
       path: '/login',
       name: 'login',
       // route level code-splitting
