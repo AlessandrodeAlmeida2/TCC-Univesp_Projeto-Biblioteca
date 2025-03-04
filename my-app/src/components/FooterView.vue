@@ -2,7 +2,7 @@
   <footer class="biblioteca-footer">
     <div class="footer-content">
       <div class="footer-section info">
-        <img src="" alt="Logo da Biblioteca" class="footer-logo" />
+        <img src="../assets/img/logo.png" alt="Logo da Biblioteca" class="footer-logo" />
         <h3>Biblioteca Escolar</h3>
         <p>Facilitando o acesso ao conhecimento desde 2005</p>
       </div>
@@ -46,7 +46,7 @@ export default {
 
 <style scoped>
 .biblioteca-footer {
-  background-image: linear-gradient(to bottom, #ff3737, #ac0101);
+  background-image: linear-gradient(to bottom, #2c2c2c, #666666);
   color: white;
   padding: 0;
   width: 100%;
