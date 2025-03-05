@@ -247,4 +247,8 @@ main {
   min-height: calc(100vh - 60px - 100px);
   padding: 20px;
 }
+
+@media screen and (max-width: 768px) {
+  
+}
 </style>

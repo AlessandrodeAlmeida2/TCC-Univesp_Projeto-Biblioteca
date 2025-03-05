@@ -33,9 +33,29 @@ const router = createRouter({
       component: () => import('../components/ConsultaAlunoView.vue'),
     },
     {
+      path: '/cadastro-livro',
+      name: 'cadastro-livro',
+      component: () => import('../components/CadastroLivroView.vue')
+    },
+    {
+      path: '/editar-livro',
+      name: 'editar-livro',
+      component: () => import('../components/EditarLivroView.vue')
+    },
+    {
       path: '/consulta-livro',
       name: 'consulta-livro',
       component: () => import('../components/ConsultaLivroView.vue')
+    },
+    {
+      path: '/cadastro-emprestimo',
+      name: 'cadastro-emprestimo',
+      component: () => import('../components/CadastroEmprestimoView.vue')
+    },
+    {
+      path: '/editar-emprestimo',
+      name: 'editar-emprestimo',
+      component: () => import('../components/EditarEmprestimoView.vue')
     },
     {
       path: '/consulta-emprestimo',

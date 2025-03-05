@@ -74,10 +74,10 @@
             <h2>Gerenciamento de Livros</h2>
           </div>
           <div class="botoes-container">
-            <button class="btn-acao">
+            <button class="btn-acao" @click="cadastarLivro">
               Cadastrar Livro
             </button>
-            <button class="btn-acao">
+            <button class="btn-acao" @click="editarLivro">
               Editar Livro
             </button>
             <button class="btn-acao" @click="consultarLivro">
@@ -91,10 +91,10 @@
             <h2>Gerenciamento de Empréstimos</h2>
           </div>
           <div class="botoes-container">
-            <button class="btn-acao">
+            <button class="btn-acao" @click="cadastrarEmprestimo">
               Cadastrar Empréstimo
             </button>
-            <button class="btn-acao">
+            <button class="btn-acao" @click="editarEmprestimo">
               Editar Empréstimo
             </button>
             <button class="btn-acao" @click="consultarEmprestimo">
@@ -117,12 +117,6 @@ export default {
   },
   methods: {
     // Métodos para interações com a interface
-    consultarLivro() {
-      this.$router.push('/consulta-livro');
-    },
-    consultarEmprestimo() {
-      this.$router.push('/consulta-emprestimo');
-    },
     cadasatrarAluno() {
       this.$router.push('/cadastro-aluno');
     },
@@ -131,6 +125,24 @@ export default {
     },
     consultarAluno() {
       this.$router.push('/consulta-aluno');
+    },
+    cadastarLivro () {
+      this.$router.push('/cadastro-livro');
+    },
+    editarLivro() {
+      this.$router.push('/editar-livro');
+    },
+    consultarLivro() {
+      this.$router.push('/consulta-livro');
+    },
+    cadastrarEmprestimo() {
+      this.$router.push('/cadastro-emprestimo');
+    },
+    editarEmprestimo() {
+      this.$router.push('/editar-emprestimo');
+    },
+    consultarEmprestimo() {
+      this.$router.push('/consulta-emprestimo');
     },
   }
 }
