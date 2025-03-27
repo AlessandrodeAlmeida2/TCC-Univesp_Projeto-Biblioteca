@@ -5,38 +5,36 @@
         <div class="cards-container">
           <div class="card">
             <div class="card-icon">
-              <i class="fas fa-book"></i>
+              <img src="../assets/img/open_book.png" alt="livro aberto" class="icon_principal">
             </div>
             <div class="card-info">
-              <h3>Livros</h3>
+              <h3>Livros Cadastrados</h3>
               <p class="numero">1.250</p>
-              <p>Total no acervo</p>
             </div>
           </div>
           
           <div class="card">
             <div class="card-icon">
-              <i class="fas fa-exchange-alt"></i>
+              <img src="../assets/img/aluno2.png" alt="aluno" class="icon_principal">
             </div>
             <div class="card-info">
-              <h3>Empréstimos</h3>
-              <p class="numero">42</p>
-              <p>Em andamento</p>
-            </div>
-          </div>
-          
-          <div class="card">
-            <div class="card-icon">
-              <i class="fas fa-user-graduate"></i>
-            </div>
-            <div class="card-info">
-              <h3>Alunos</h3>
+              <h3>Alunos cadastrados</h3>
               <p class="numero">520</p>
-              <p>Cadastrados</p>
             </div>
+
           </div>
           
           <div class="card">
+            <div class="card-icon">
+              <img src="../assets/img/livros2.png" alt="livros" class="icon_principal">
+            </div>
+            <div class="card-info">
+              <h3>Empréstimos realizados</h3>
+              <p class="numero">42</p>
+            </div>
+          </div>
+          
+          <!-- <div class="card">
             <div class="card-icon">
               <i class="fas fa-exclamation-triangle"></i>
             </div>
@@ -45,7 +43,7 @@
               <p class="numero">15</p>
               <p>Livros atrasados</p>
             </div>
-          </div>
+          </div> -->
         </div>
       </section>
 
@@ -283,7 +281,7 @@ h2 {
 
 .card-info h3 {
   margin-bottom: 5px;
-  color: var(--cor-azul);
+  color: var(--black);
 }
 
 .numero {
@@ -311,6 +309,10 @@ h2 {
   display: flex;
   align-items: flex-start;
   margin-bottom: 20px;
+}
+
+.icon_principal {
+  width: 80px;
 }
 
 .icon {
