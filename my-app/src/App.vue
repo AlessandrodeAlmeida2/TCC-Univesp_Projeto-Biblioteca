@@ -5,12 +5,12 @@
         <img src="./assets/img/logo.png" alt="Logo da Biblioteca" class="logo" />
         <h1 class="titulo-principal">Biblioteca Escolar</h1>
       </div>
-      <div class="search-bar">
+      <!-- <div class="search-bar">
         <input type="text" placeholder="Buscar livros, autores..." v-model="searchQuery" />
         <button class="search-button">
           <i class="fas fa-search"></i>
         </button>
-      </div>
+      </div> -->
       <div class="user-info" ref="userDropdown">
         <img 
           src="" 

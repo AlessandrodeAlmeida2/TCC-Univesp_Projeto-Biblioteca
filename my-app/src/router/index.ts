@@ -15,7 +15,14 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
-      alias: '/home'
+      alias: '/home',
+      //meta: { requiresAuth: true }
+    },
+    {
+      path: '/aluno',
+      name: 'aluno',
+      component: () => import('@/components/AlunoView.vue'),
+      //meta: { requiresAuth: true }
     },
     {
       path: '/cadastro-aluno',
@@ -84,8 +91,11 @@ async function getUser(next: NavigationGuardNext) {
 
   if (localUser.data.session == null) {
     next('/login');
+  }
+  else if (localUser.data.session == "adimin@email.com") {
+    next('/home');
   } else {
-    next();
+    next('/aluno');
   }
 }
 
