@@ -119,7 +119,7 @@ export default {
       this.$router.push('/cadastro-aluno');
     },
     editarAluno() {
-      this.$router.push('/editar-aluno');
+      this.$router.push('/editar-alunos');
     },
     consultarAluno() {
       this.$router.push('/consulta-aluno');

@@ -30,9 +30,14 @@ const router = createRouter({
       component: () => import('../components/CadastroAlunoView.vue')
     },
     {
-      path: '/editar-aluno',
+      path: '/editar-alunos',
+      name: 'editar-alunos',
+      component: () => import('../components/EditarAlunosView.vue'),
+    },
+    {
+      path: '/editar-aluno/:ra',
       name: 'editar-aluno',
-      component: () => import('../components/EditarAlunoView.vue'),
+      component: ()=> import('@/components/EditarAlunoView.vue')
     },
     {
       path: '/consulta-aluno',

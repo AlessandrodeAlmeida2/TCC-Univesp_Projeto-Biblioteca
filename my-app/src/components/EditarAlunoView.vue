@@ -1,284 +1,427 @@
 <template>
-  <div class="editar-aluno-container">
-    <header class="page-header">
-      <h1>Editar Aluno</h1>
-    </header>
-    
-    <div class="search-container">
-      <input 
-        type="text" 
-        placeholder="Buscar aluno..." 
-        v-model="searchQuery" 
-        class="search-input"
-      >
-      <button class="search-button">
-        <i class="fas fa-search"></i>
-      </button>
-    </div>
-
-    <!-- Versão Desktop -->
-    <div class="tabela-desktop">
-      <table class="alunos-table">
-        <thead>
-          <tr>
-            <th>RA</th>
-            <th>Nome do Aluno</th>
-            <th>Editar / Excluir</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="aluno in filteredAlunos" :key="aluno.ra">
-            <td>{{ aluno.ra }}</td>
-            <td>{{ aluno.nome }}</td>
-            <td class="acoes">
-              <button class="btn-editar" @click="editarAluno(aluno)">
-                <i class="fas fa-edit"></i>
-              </button>
-              <button class="btn-excluir" @click="excluirAluno(aluno)">
-                <i class="fas fa-trash-alt"></i>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Versão Mobile -->
-    <div class="tabela-mobile">
-      <div 
-        v-for="aluno in filteredAlunos" 
-        :key="aluno.ra" 
-        class="card-aluno"
-      >
-        <div class="card-header">
-          <span class="nome">{{ aluno.nome }}</span>
-          <span class="ra">RA: {{ aluno.ra }}</span>
+    <div class="cadastro-aluno-container">
+      <section class="cadastro-aluno" v-if="aluno">
+        <h2>Cadastro de Aluno</h2>
+        
+        <!-- Container das duas colunas principais -->
+        <div class="columns-container">
+          <!-- Coluna da esquerda -->
+          <div class="left-column">
+            <div class="form-group">
+              <label for="ra">Registro Acadêmico (RA)</label>
+              <input 
+                type="text" 
+                id="ra" 
+                v-model="aluno.ra" 
+                required 
+                placeholder="Digite o RA"
+              >
+            </div>
+  
+            <div class="form-group">
+              <label for="nome">Nome Completo</label>
+              <input 
+                type="text" 
+                id="nome" 
+                v-model="aluno.nome" 
+                required 
+                placeholder="Digite o nome completo"
+              >
+            </div>
+  
+            <div class="form-group endereco">
+              <label for="endereco">Endereço</label>
+              <input 
+                type="text" 
+                id="endereco" 
+                v-model="aluno.endereco" 
+                placeholder="Digite o endereço completo"
+              >
+            </div>
+  
+            <div class="form-group">
+              <label for="dataNascimento">Data de Nascimento</label>
+              <input 
+                type="date" 
+                id="dataNascimento" 
+                v-model="aluno.dataNascimento" 
+                required
+              >
+            </div>
+  
+            <div class="form-group">
+              <label for="telefone">Telefone</label>
+              <input 
+                type="tel" 
+                id="telefone" 
+                v-model="aluno.telefone" 
+                placeholder="(XX) XXXXX-XXXX"
+              >
+            </div>
+  
+            <div class="form-group">
+              <label for="email">E-mail</label>
+              <input 
+                type="email" 
+                id="email" 
+                v-model="aluno.email" 
+                required 
+                placeholder="Digite o e-mail"
+              >
+            </div>
+          </div>
+  
+          <!-- Coluna da direita (Foto) -->
+          <div class="right-column">
+            <div class="foto-container">
+              <div class="foto-preview">
+                <img v-if="urlImagem" :src="urlImagem" alt="Foto do Aluno">
+                <div v-else class="placeholder">Foto do aluno</div>
+              </div>
+  
+              <div class="foto-acoes">
+                <input 
+                  type="file" 
+                  id="carregarFoto" 
+                  @change="handleFileUpload" 
+                  accept="image/*"
+                  hidden
+                >
+                <button type="button" class="btn-foto" @click="$refs.carregarFoto.click()">
+                  Carregar Foto
+                </button>
+  
+                <input 
+                  type="file" 
+                  id="tirarFoto" 
+                  accept="image/*" 
+                  capture="camera"
+                  hidden
+                >
+                <button type="button" class="btn-foto" @click="$refs.tirarFoto.click()">
+                  Tirar Foto
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="card-acoes">
-          <button 
-            class="btn-editar" 
-            @click="editarAluno(aluno)"
-          >
-            <i class="fas fa-edit"></i> Editar
+  
+        <!-- Informações adicionais abaixo das colunas -->
+        <div class="info-adicional">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="sala">Sala de Aula</label>
+              <select 
+                id="sala" 
+                v-model="aluno.sala" 
+                required
+              >
+                <option value="">Selecione a sala</option>
+                <option value="Sala 101">Sala 101</option>
+                <option value="Sala 202">Sala 202</option>
+                <option value="Sala 303">Sala 303</option>
+              </select>
+            </div>
+          </div>
+  
+          <div class="form-row periodo-container">
+            <label>Período</label>
+            <div class="radio-group">
+              <div class="radio-option">
+                <input 
+                  type="radio" 
+                  id="manha" 
+                  value="Manhã" 
+                  v-model="aluno.periodo"
+                >
+                <label for="manha">Manhã</label>
+              </div>
+              
+              <div class="radio-option">
+                <input 
+                  type="radio" 
+                  id="tarde" 
+                  value="Tarde" 
+                  v-model="aluno.periodo"
+                >
+                <label for="tarde">Tarde</label>
+              </div>
+              
+              <div class="radio-option">
+                <input 
+                  type="radio" 
+                  id="noite" 
+                  value="Noite" 
+                  v-model="aluno.periodo"
+                >
+                <label for="noite">Noite</label>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Botões de ação -->
+        <div class="form-actions">
+          <button type="button" class="btn-cancelar" @click="limparFormulario">
+            Cancelar
           </button>
-          <button 
-            class="btn-excluir" 
-            @click="excluirAluno(aluno)"
-          >
-            <i class="fas fa-trash-alt"></i> Excluir
+          <button type="submit" class="btn-salvar" @click="atualizarAluno">
+            Atualizar Aluno
           </button>
         </div>
-      </div>
+      </section>
     </div>
-  </div>
-</template>
-
-<script>
+  </template>
+  
+  <script>
 export default {
-  name: 'EditarAlunoView',
+  name: 'EditarAluno',
   data() {
     return {
-      searchQuery: '',
+      aluno: {
+        ra: '',
+        nome: '',
+        email: '',
+        telefone: '',
+        dataNascimento: '',
+        sala: '',
+        periodo: '',
+        endereco: '',
+        foto: null
+      },
       alunos: [
-        { ra: '076245/8570', nome: 'Luiza Souza Ferreira' },
-        { ra: '746697480/1', nome: 'Erick Dias Lima' },
-        { ra: '455538/6233', nome: 'Luis Rodrigues Cunha' },
-        { ra: '407688/7244', nome: 'Maria Oliveira Gomes' },
-        { ra: '318602/5363', nome: 'Eduardo Souza Fernandes' },
-        { ra: '474740/9869', nome: 'Leticia Castro Martins' }
-      ]
+        { ra: '0762458570', nome: 'Luiza Souza Ferreira' },
+        { ra: '7466974801', nome: 'Erick Dias Lima' },
+        { ra: '4555386233', nome: 'Luis Rodrigues Cunha' },
+        { ra: '4076887244', nome: 'Maria Oliveira Gomes' },
+        { ra: '3186025363', nome: 'Eduardo Souza Fernandes' },
+        { ra: '4747409869', nome: 'Leticia Castro Martins' }
+      ],
+      urlImagem: null
     }
   },
-  computed: {
-    filteredAlunos() {
-      return this.alunos.filter(aluno => 
-        aluno.nome.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        aluno.ra.includes(this.searchQuery)
-      )
-    }
+  mounted() {
+    // Usar mounted em vez de created
+    this.buscarAluno(this.$route.params.ra)
+    console.log('Parâmetros da rota:', this.$route.params);
   },
   methods: {
-    editarAluno(aluno) {
-      // Lógica para editar aluno
-      console.log('Editando aluno:', aluno)
+    buscarAluno(ra) {
+      console.log('RA recebido:', ra) // Debug
+      
+      // Remove todos os caracteres que não são números para comparação
+      const raLimpo = ra.replace(/[^0-9]/g, '')
+      
+      // Encontra o aluno com base no RA, ignorando formatação
+      const alunoEncontrado = this.alunos.find(aluno => 
+        aluno.ra.replace(/[^0-9]/g, '') === raLimpo
+      )
+      
+      console.log('Aluno encontrado:', alunoEncontrado) // Debug
+      
+      if (alunoEncontrado) {
+        // Preenche todos os campos do aluno
+        this.aluno = {
+          ra: alunoEncontrado.ra,
+          nome: alunoEncontrado.nome,
+          email: `${alunoEncontrado.nome.toLowerCase().replace(/\s/g, '.')}@exemplo.com`,
+          telefone: '(11) 98765-4321',
+          dataNascimento: '2000-01-01',
+          sala: 'Sala 101',
+          periodo: 'Manhã',
+          endereco: 'Rua Exemplo, 123 - São Paulo, SP',
+          foto: null
+        }
+        
+        // Se quiser adicionar uma imagem padrão
+        this.urlImagem = ''
+      } else {
+        console.error('Aluno não encontrado para o RA:', ra)
+        alert('Aluno não encontrado')
+        this.$router.push('/alunos')
+      }
     },
-    excluirAluno(aluno) {
-      // Lógica para excluir aluno
-      console.log('Excluindo aluno:', aluno)
+    atualizarAluno() {
+      if (this.validarFormulario()) {
+        console.log('Dados do aluno atualizados:', this.aluno)
+        alert('Aluno atualizado com sucesso!')
+        this.$router.push('/alunos')
+      }
+    },
+    validarFormulario() {
+      if (!this.aluno.nome || !this.aluno.ra || !this.aluno.dataNascimento) {
+        alert('Preencha todos os campos obrigatórios')
+        return false
+      }
+      return true
+    },
+    limparFormulario() {
+      this.aluno = {
+        ra: '',
+        nome: '',
+        email: '',
+        telefone: '',
+        dataNascimento: '',
+        sala: '',
+        periodo: '',
+        endereco: '',
+        foto: null
+      }
+      this.urlImagem = null
+    },
+    handleFileUpload(event) {
+      const file = event.target.files[0]
+      this.aluno.foto = file
+      this.urlImagem = URL.createObjectURL(file)
     }
   }
 }
 </script>
-
-<style scoped>
-@import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
-
-.editar-aluno-container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.page-header {
-  background-color: #f3f3f3;
-  padding: 10px 15px;
-  margin-bottom: 20px;
-  border-radius: 5px;
-}
-
-.page-header h1 {
-  margin: 0;
-  color: #333;
-  font-size: 1.5rem;
-}
-
-.search-container {
-  display: flex;
-  margin-bottom: 20px;
-  max-width: 400px;
-}
-
-.search-input {
-  flex-grow: 1;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px 0 0 4px;
-}
-
-.search-button {
-  padding: 10px 15px;
-  background-color: #0077b5;
-  color: white;
-  border: none;
-  border-radius: 0 4px 4px 0;
-  cursor: pointer;
-}
-
-/* Estilos da Tabela Desktop */
-.tabela-desktop {
-  display: block;
-}
-
-.alunos-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.alunos-table th, 
-.alunos-table td {
-  border: 1px solid #ddd;
-  padding: 12px;
-  text-align: left;
-}
-
-.alunos-table th {
-  background-color: #f3f3f3;
-  font-weight: bold;
-  color: #333;
-}
-
-.acoes {
-  text-align: center !important;
-}
-
-.btn-editar, 
-.btn-excluir {
-  background: none;
-  border: none;
-  cursor: pointer;
-  margin: 0 5px;
-  color: #666;
-  transition: color 0.3s;
-}
-
-.btn-editar:hover {
-  color: #0077b5;
-}
-
-.btn-excluir:hover {
-  color: #e74c3c;
-}
-
-.btn-editar i, 
-.btn-excluir i {
-  font-size: 1.2rem;
-}
-
-/* Estilos da Versão Mobile */
-.tabela-mobile {
-  display: none;
-}
-
-@media screen and (max-width: 768px) {
-  .tabela-desktop {
-    display: none;
+  
+  <style scoped>
+  .columns-container {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 2rem;
+    margin-bottom: 20px;
+    border: solid 1px var(--cor-cinza);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px;
+    background-color: var(--cor-cinza-claro);
   }
   
-  .tabela-mobile {
-    display: block;
-  }
-  
-  .search-container {
-    max-width: 100%;
-  }
-  
-  .card-aluno {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin-bottom: 15px;
-    padding: 15px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
-  
-  .card-header {
+  .left-column {
+    width: 80%;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
+    flex-direction: column;
+    gap: 15px;
   }
   
-  .card-header .nome {
-    font-weight: bold;
+  .right-column {
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  .form-group {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .form-group label {
+    color: var(--cor-cinza-escuro);
+    font-weight: 500;
+    text-align: right;
+    padding-right: 10px;
+  }
+  
+  .form-group input, 
+  .form-group select {
+    background-color: var(--cor-branco);
+    padding: 10px;
+    border: 1px solid var(--cor-cinza-claro);
+    border-radius: 4px;
     font-size: 1rem;
   }
   
-  .card-header .ra {
-    color: #666;
-    font-size: 0.9rem;
-  }
-  
-  .card-acoes {
+  .form-actions {
     display: flex;
-    gap: 10px;
+    justify-content: space-evenly;
+    margin-top: 15px;
   }
   
-  .card-acoes .btn-editar,
-  .card-acoes .btn-excluir {
-    flex-grow: 1;
+  .foto-preview {
+    width: 100%;
+    height: 200px;
+    border: 1px dashed var(--cor-cinza);
+    border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-bottom: 15px;
+  }
+  
+  .foto-preview img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+  }
+  
+  .placeholder {
+    color: var(--cor-black);
+    text-align: center;
+    font-style: italic;
+  }
+  
+  .foto-acoes {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+  }
+  
+  .btn-foto {
     padding: 10px;
+    background-image: linear-gradient(to right, #d4d4d4, #f3f3f3a4);
+    color: var(--cor-cinza-escuro);
+    border: solid 2px var(--cor-cinza);
     border-radius: 4px;
-    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-image 0.3s;
   }
   
-  .card-acoes .btn-editar {
-    background-color: #e6f2ff;
-    color: #0077b5;
+  .btn-foto:hover {
+    background-image: none;
+    background-color: var(--cor-azul-claro);
   }
   
-  .card-acoes .btn-excluir {
-    background-color: #ffebee;
-    color: #e74c3c;
+  .info-adicional {
+    color: var(--cor-cinza-escuro);
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid var(--cor-cinza);
+    border-radius: 10px;
+    background-color: var(--cor-cinza-claro);
   }
   
-  .card-acoes .btn-editar i,
-  .card-acoes .btn-excluir i {
-    margin-right: 5px;
+  .periodo-container {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
   }
-}
-</style>
+  
+  .radio-group {
+    display: flex;
+    gap: 20px;
+    padding: 10px 0;
+  }
+  
+  .radio-option {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  @media (max-width: 768px) {
+    .columns-container {
+      grid-template-columns: 1fr;
+    }
+    
+    .right-column {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    
+    .form-group {
+      grid-template-columns: 1fr;
+    }
+    
+    .form-group label {
+      text-align: left;
+    }
+  }
+  </style>
+  
