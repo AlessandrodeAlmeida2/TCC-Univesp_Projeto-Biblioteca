@@ -5,7 +5,7 @@
         <div class="cards-container">
           <div class="card">
             <div class="card-icon">
-              <img src="../assets/img/open_book.png" alt="livro aberto" class="icon_principal">
+              <img src="../assets/img/livros2.png" alt="livro aberto" class="icon_principal">
             </div>
             <div class="card-info">
               <h3>Livros Cadastrados</h3>
@@ -26,7 +26,7 @@
           
           <div class="card">
             <div class="card-icon">
-              <img src="../assets/img/livros2.png" alt="livros" class="icon_principal">
+              <img src="../assets/img/open_book.png" alt="livros" class="icon_principal">
             </div>
             <div class="card-info">
               <h3>Empréstimos realizados</h3>
