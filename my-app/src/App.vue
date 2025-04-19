@@ -5,12 +5,7 @@
         <img src="./assets/img/logo.png" alt="Logo da Biblioteca" class="logo" />
         <h1 class="titulo-principal">Biblioteca Escolar</h1>
       </div>
-      <!-- <div class="search-bar">
-        <input type="text" placeholder="Buscar livros, autores..." v-model="searchQuery" />
-        <button class="search-button">
-          <i class="fas fa-search"></i>
-        </button>
-      </div> -->
+      
       <div class="user-info" ref="userDropdown">
         <img 
           src="" 
@@ -26,6 +21,7 @@
               <li><a href="#">Empréstimos</a></li>
               <li><a href="#">Alunos</a></li>
               <li><a href="#">Relatórios</a></li>
+              <li><a @click="logout">Sair</a></li>
             </ul>
           </nav>
         </div>
@@ -44,6 +40,8 @@
 </template>
 
 <script>
+import { supabase } from './supabase';
+
 export default {
   data() {
     return {
@@ -64,6 +62,12 @@ export default {
       if (this.isDropdownOpen && !this.$refs.userDropdown.contains(event.target)) {
         this.isDropdownOpen = false;
       }
+    },
+    async logout() {
+      // Realiza o logout usando o supabase
+      await supabase.auth.signOut();
+      // Redireciona para a tela de login
+      this.$router.push('/login');
     }
   },
   mounted() {

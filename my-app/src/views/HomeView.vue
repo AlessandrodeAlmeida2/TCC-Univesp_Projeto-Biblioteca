@@ -75,7 +75,7 @@
             <button class="btn-acao" @click="cadastarLivro">
               Cadastrar Livro
             </button>
-            <button class="btn-acao" @click="editarLivro">
+            <button class="btn-acao" @click="editarLivros">
               Editar Livro
             </button>
             <button class="btn-acao" @click="consultarLivro">
@@ -127,8 +127,8 @@ export default {
     cadastarLivro () {
       this.$router.push('/cadastro-livro');
     },
-    editarLivro() {
-      this.$router.push('/editar-livro');
+    editarLivros() {
+      this.$router.push('/editar-livros');
     },
     consultarLivro() {
       this.$router.push('/consulta-livro');

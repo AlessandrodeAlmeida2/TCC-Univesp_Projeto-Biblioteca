@@ -16,38 +16,47 @@
                   </tr>
               </thead>
               <tbody>
-                  <tr v-for="aluno in alunos" :key="aluno.ra">
-                      <td>{{ aluno.ra }}</td>
-                      <td>{{ aluno.nome }}</td>
-                      <td>{{ aluno.turma }}</td>
-                      <td>{{ aluno.email }}</td>
-                      <td>
-                          <span 
-                              class="status" 
-                              :class="{
-                                  'ativo': aluno.situacao === 'Ativo',
-                                  'inativo': aluno.situacao === 'Inativo',
-                                  'pendente': aluno.situacao === 'Pendente'
-                              }"
-                          >
-                              {{ aluno.situacao }}
-                          </span>
-                      </td>
-                      <td>
-                          <div class="acoes-desktop">
-                              <button class="btn-table" @click="visualizarAluno(aluno)">
-                                  <i class="fas fa-eye"></i>
-                              </button>
-                              <button class="btn-table" @click="editarAluno(aluno)">
-                                  <i class="fas fa-edit"></i>
-                              </button>
-                              <button class="btn-table" @click="excluirAluno(aluno)">
-                                  <i class="fas fa-trash-alt"></i>
-                              </button>
-                          </div>
-                      </td>
-                  </tr>
-              </tbody>
+  <tr v-for="aluno in alunos" :key="aluno.ra">
+    <td>{{ aluno.ra }}</td>
+    <td>{{ aluno.nome }}</td>
+    <td>{{ aluno.turma }}</td>
+    <td>{{ aluno.email }}</td>
+    <td>
+      <span 
+        class="status" 
+        :class="{
+          'ativo': aluno.situacao === 'Ativo',
+          'inativo': aluno.situacao === 'Inativo',
+          'pendente': aluno.situacao === 'Pendente'
+        }"
+      >
+        {{ aluno.situacao }}
+      </span>
+      <div v-if="emprestimosDoAluno(aluno.ra).length">
+        <ul>
+          <li v-for="emp in emprestimosDoAluno(aluno.ra)" :key="emp.id">
+            <span :class="{'atrasado': isAtrasado(emp)}">
+              Livro: {{ emp.livro_id || emp.livro || emp.titulo }}<br>
+              Retirada: {{ emp.data_retirada || emp.dataRetirada }}<br>
+              Devolução: {{ emp.data_devolucao || emp.dataDevolucao }}<br>
+              Status: <span :class="{'status atrasado': isAtrasado(emp)}">{{ statusEmprestimo(emp) }}</span>
+            </span>
+          </li>
+        </ul>
+      </div>
+      <div v-else>
+        Nenhum empréstimo
+      </div>
+    </td>
+    <td>
+      <div class="acoes-desktop">
+        <button class="btn-table" @click="visualizarAluno(aluno)">
+          <i class="fas fa-eye"></i>
+        </button>
+      </div>
+    </td>
+  </tr>
+</tbody>
           </table>
       </div>
 
@@ -68,16 +77,34 @@
                   </span>
               </div>
               <div class="card-body">
-                  <div class="info-linha">
-                      <strong>RA:</strong> {{ aluno.ra }}
-                  </div>
-                  <div class="info-linha">
-                      <strong>Turma:</strong> {{ aluno.turma }}
-                  </div>
-                  <div class="info-linha">
-                      <strong>Email:</strong> {{ aluno.email }}
-                  </div>
-              </div>
+  <div class="info-linha">
+    <strong>RA:</strong> {{ aluno.ra }}
+  </div>
+  <div class="info-linha">
+    <strong>Turma:</strong> {{ aluno.turma }}
+  </div>
+  <div class="info-linha">
+    <strong>Email:</strong> {{ aluno.email }}
+  </div>
+  <div class="info-linha">
+    <strong>Empréstimos:</strong>
+    <div v-if="emprestimosDoAluno(aluno.ra).length">
+      <ul>
+        <li v-for="emp in emprestimosDoAluno(aluno.ra)" :key="emp.id">
+          <span :class="{'atrasado': isAtrasado(emp)}">
+            Livro: {{ emp.livro_id || emp.livro || emp.titulo }}<br>
+            Retirada: {{ emp.data_retirada || emp.dataRetirada }}<br>
+            Devolução: {{ emp.data_devolucao || emp.dataDevolucao }}<br>
+            Status: <span :class="{'status atrasado': isAtrasado(emp)}">{{ statusEmprestimo(emp) }}</span>
+          </span>
+        </li>
+      </ul>
+    </div>
+    <div v-else>
+      Nenhum empréstimo
+    </div>
+  </div>
+</div>
               <div class="card-acoes">
                   <button class="btn-table" @click="visualizarAluno(aluno)">
                       <i class="fas fa-eye"></i> Visualizar
@@ -97,52 +124,62 @@
 </template>
 
 <script>
+import { getEmprestimos } from '../services/emprestimosService.js';
+import alunoService from '../services/alunoService.js';
+
 export default {
   name: 'ConsultaAluno',
   data() {
-      return {
-          alunos: [
-              {
-                  ra: '076245/8570',
-                  nome: 'Luiza Souza Ferreira',
-                  turma: '2º A',
-                  email: 'luiza.ferreira@escola.com',
-                  situacao: 'Ativo'
-              },
-              {
-                  ra: '746697480/1',
-                  nome: 'Erick Dias Lima',
-                  turma: '3º B',
-                  email: 'erick.lima@escola.com',
-                  situacao: 'Inativo'
-              },
-              {
-                  ra: '455538/6233',
-                  nome: 'Luis Rodrigues Cunha',
-                  turma: '1º C',
-                  email: 'luis.cunha@escola.com',
-                  situacao: 'Pendente'
-              },
-              {
-                  ra: '407688/7244',
-                  nome: 'Maria Oliveira Gomes',
-                  turma: '2º B',
-                  email: 'maria.gomes@escola.com',
-                  situacao: 'Ativo'
-              }
-          ]
-      }
+    return {
+      alunos: [],
+      emprestimos: [],
+      carregando: false,
+      erro: null
+    };
+  },
+  async mounted() {
+    this.carregando = true;
+    try {
+      this.alunos = await alunoService.listarAlunos();
+      const { data, error } = await getEmprestimos();
+      if (error) throw error;
+      this.emprestimos = data;
+    } catch (e) {
+      this.erro = 'Erro ao carregar dados dos alunos ou empréstimos.';
+    } finally {
+      this.carregando = false;
+    }
   },
   methods: {
-      visualizarAluno(aluno) {
-          console.log('Visualizando aluno:', aluno);
-      },
-      editarAluno(aluno) {
-          console.log('Editando aluno:', aluno);
-      },
-      excluirAluno(aluno) {
-          console.log('Excluindo aluno:', aluno);
+    visualizarAluno(aluno) {
+      console.log('Visualizando aluno:', aluno);
+    },
+    editarAluno(aluno) {
+      console.log('Editando aluno:', aluno);
+    },
+    excluirAluno(aluno) {
+      console.log('Excluindo aluno:', aluno);
+    },
+    emprestimosDoAluno(ra) {
+      return this.emprestimos.filter(e => e.aluno_ra === ra);
+    },
+    statusEmprestimo(emprestimo) {
+      if (!emprestimo) return 'Nenhum';
+      if (emprestimo.status === 'Atrasado') return 'Atrasado';
+      if (emprestimo.status === 'Em Andamento') return 'Em Andamento';
+      if (emprestimo.status === 'Devolvido') return 'Devolvido';
+      return 'Desconhecido';
+    },
+    isAtrasado(emprestimo) {
+      if (!emprestimo) return false;
+      if (emprestimo.status === 'Atrasado') return true;
+      if (emprestimo.status === 'Em Andamento') {
+        const hoje = new Date();
+        const dataDevolucao = new Date(emprestimo.data_devolucao || emprestimo.dataDevolucao);
+        return dataDevolucao < hoje;
       }
+      return false;
+    }
   }
 }
 </script>

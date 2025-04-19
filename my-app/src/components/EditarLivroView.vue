@@ -74,10 +74,14 @@
           </button>
         </div>
       </form>
+      <p v-if="mensagem" style="color: green">{{ mensagem }}</p>
+      <p v-if="erro" style="color: red">{{ erro }}</p>
     </section>
   </template>
   
   <script>
+  import { updateLivro } from '../services/livrosService.js';
+
   export default {
     name: 'EdicaoLivro',
     props: {
@@ -88,16 +92,39 @@
     },
     data() {
       return {
-        livroEditado: { ...this.livro }
+        livroEditado: { ...this.livro },
+        mensagem: '',
+        erro: ''
       }
     },
     methods: {
-      atualizarLivro() {
-        // Emitir evento para o componente pai com o livro atualizado
-        this.$emit('livro-atualizado', { ...this.livroEditado });
+      async atualizarLivro() {
+        this.mensagem = '';
+        this.erro = '';
+        // Converter status para o padrão do banco
+        let statusDb = this.livroEditado.status.toLowerCase();
+        if (statusDb === 'disponível') statusDb = 'disponivel';
+        // Montar objeto para atualização
+        const updates = {
+          titulo: this.livroEditado.titulo,
+          autor: this.livroEditado.autor,
+          categoria: this.livroEditado.categoria,
+          status: statusDb
+        };
+        try {
+          const { data, error } = await updateLivro(this.livroEditado.id, updates);
+          if (error) {
+            this.erro = 'Erro ao atualizar livro: ' + (error.message || error);
+          } else {
+            this.mensagem = 'Livro atualizado com sucesso!';
+            // Emitir evento para o pai atualizar a lista
+            this.$emit('livro-atualizado', { ...this.livroEditado, ...updates });
+          }
+        } catch (e) {
+          this.erro = 'Erro inesperado ao atualizar livro.';
+        }
       },
       cancelarEdicao() {
-        // Emitir evento para fechar o modo de edição
         this.$emit('cancelar-edicao');
       }
     }

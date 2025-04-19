@@ -16,7 +16,7 @@ const router = createRouter({
       name: 'home',
       component: HomeView,
       alias: '/home',
-      //meta: { requiresAuth: true }
+      meta: { requiresAuth: true }
     },
     {
       path: '/aluno',
@@ -50,7 +50,12 @@ const router = createRouter({
       component: () => import('../components/CadastroLivroView.vue')
     },
     {
-      path: '/editar-livro',
+      path: '/editar-livros',
+      name: 'editar-livros',
+      component: () => import('../components/EditarLivros.vue')
+    },
+    {
+      path: '/editar-livro/:id',
       name: 'editar-livro',
       component: () => import('../components/EditarLivroView.vue')
     },
@@ -101,11 +106,8 @@ async function getUser(next: NavigationGuardNext) {
 
   if (localUser.data.session == null) {
     next('/login');
-  }
-  else if (localUser.data.session == "admin@email.com") {
-    next('/home');
   } else {
-    next('/aluno');
+    next();
   }
 }
 

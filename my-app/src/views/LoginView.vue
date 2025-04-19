@@ -42,9 +42,9 @@
         <div v-if="loginMessage" :class="['message', loginMessage.type]">
           {{ loginMessage.text }}
         </div>
-      </form>
+      </form><br>
       <div>
-        <h4>Se não tiver cadastro, <a href="/cadastrar"> cadastre-se</a></h4>
+        <h4>Se não tiver cadastro, <a class="cadastro" href="/cadastrar"> cadastre-se</a></h4>
       </div>
     </div>
   </template>
@@ -52,9 +52,11 @@
   <script>
   import { supabase } from '../supabase';
   import { ref } from 'vue';
+  import { useRouter } from 'vue-router';
   
   export default {
     setup() {
+      const router = useRouter();
       const formData = ref({
         email: '',
         password: '',
@@ -88,6 +90,7 @@
               type: 'success',
               text: 'Login realizado com sucesso!',
             };
+            router.push('/');
           }
         } catch (error) {
           console.error(error);
@@ -232,6 +235,14 @@
     background-color: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
+  }
+
+  .cadastro {
+    color: #4a90e2;
+  }
+
+  .cadastro:hover {
+    text-decoration: underline;
   }
   </style>
   Last edited 3 hours ago

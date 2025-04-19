@@ -95,56 +95,46 @@
 </template>
 
 <script>
+import { getLivros } from '../services/livrosService.js';
+
 export default {
-name: 'ConsultaLivro',
-data() {
-  return {
-    livros: [
-      {
-        codigo: 'L001',
-        titulo: 'Dom Casmurro',
-        autor: 'Machado de Assis',
-        categoria: 'Literatura Brasileira',
-        status: 'Emprestado'
-      },
-      {
-        codigo: 'L002',
-        titulo: 'O Pequeno Príncipe',
-        autor: 'Antoine de Saint-Exupéry',
-        categoria: 'Literatura Infantil',
-        status: 'Disponível'
-      },
-      {
-        codigo: 'L003',
-        titulo: 'Harry Potter e a Pedra Filosofal',
-        autor: 'J.K. Rowling',
-        categoria: 'Fantasia',
-        status: 'Reservado'
-      },
-      {
-        codigo: 'L004',
-        titulo: 'A Culpa é das Estrelas',
-        autor: 'John Green',
-        categoria: 'Romance',
-        status: 'Disponível'
+  name: 'ConsultaLivro',
+  data() {
+    return {
+      livros: [],
+      carregando: false,
+      erro: ''
+    };
+  },
+  async mounted() {
+    this.carregando = true;
+    try {
+      const { data, error } = await getLivros();
+      if (error) {
+        this.erro = 'Erro ao carregar livros: ' + (error.message || error);
+      } else {
+        this.livros = data;
       }
-    ]
-  }
-},
-methods: {
-  visualizarLivro(livro) {
-    // Lógica para visualizar detalhes do livro
-    console.log('Visualizando livro:', livro);
+    } catch (e) {
+      this.erro = 'Erro inesperado ao carregar livros.';
+    } finally {
+      this.carregando = false;
+    }
   },
-  editarLivro(livro) {
-    // Lógica para editar livro
-    console.log('Editando livro:', livro);
-  },
-  excluirLivro(livro) {
-    // Lógica para excluir livro
-    console.log('Excluindo livro:', livro);
+  methods: {
+    visualizarLivro(livro) {
+      // Lógica para visualizar detalhes do livro
+      console.log('Visualizando livro:', livro);
+    },
+    editarLivro(livro) {
+      // Lógica para editar livro
+      this.$router.push({ name: 'editar-livro', params: { id: livro.id }});
+    },
+    excluirLivro(livro) {
+      // Lógica para excluir livro
+      console.log('Excluindo livro:', livro);
+    }
   }
-}
 }
 </script>
 
