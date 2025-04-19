@@ -3,18 +3,6 @@
       <h2>Login</h2>
       <form @submit.prevent="handleSubmit" class="login-form">
         <div class="form-group">
-          <label for="username">Usuário:</label>
-          <input 
-            type="text" 
-            id="username" 
-            v-model="formData.username" 
-            :class="{ 'input-error': errors.username }"
-            required
-          />
-          <span v-if="errors.username" class="error-message">{{ errors.username }}</span>
-        </div>
-        
-        <div class="form-group">
           <label for="email">Email:</label>
           <input 
             type="email" 
@@ -55,108 +43,73 @@
           {{ loginMessage.text }}
         </div>
       </form>
+      <div>
+        <h4>Se não tiver cadastro, <a href="/cadastrar"> cadastre-se</a></h4>
+      </div>
     </div>
   </template>
   
   <script>
+  import { supabase } from '../supabase';
+  import { ref } from 'vue';
+  
   export default {
-    name: 'LoginComponent',
-    data() {
-      return {
-        formData: {
-          username: '',
-          email: '',
-          password: ''
-        },
-        errors: {
-          username: '',
-          email: '',
-          password: ''
-        },
-        showPassword: false,
-        isSubmitting: false,
-        loginMessage: null
-      }
-    },
-    methods: {
-      validateForm() {
-        let isValid = true;
-        this.errors = {
-          username: '',
-          email: '',
-          password: ''
-        };
-        
-        // Validação do usuário
-        if (!this.formData.username.trim()) {
-          this.errors.username = 'O nome de usuário é obrigatório';
-          isValid = false;
-        } else if (this.formData.username.length < 3) {
-          this.errors.username = 'O nome de usuário deve ter pelo menos 3 caracteres';
-          isValid = false;
-        }
-        
-        // Validação do email
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!this.formData.email.trim()) {
-          this.errors.email = 'O email é obrigatório';
-          isValid = false;
-        } else if (!emailRegex.test(this.formData.email)) {
-          this.errors.email = 'Por favor, insira um email válido';
-          isValid = false;
-        }
-        
-        // Validação da senha
-        if (!this.formData.password) {
-          this.errors.password = 'A senha é obrigatória';
-          isValid = false;
-        } else if (this.formData.password.length < 6) {
-          this.errors.password = 'A senha deve ter pelo menos 6 caracteres';
-          isValid = false;
-        }
-        
-        return isValid;
-      },
+    setup() {
+      const formData = ref({
+        email: '',
+        password: '',
+      });
       
-      async handleSubmit() {
-        if (!this.validateForm()) {
-          return;
-        }
-        
-        this.isSubmitting = true;
-        this.loginMessage = null;
-        
+      const errors = ref({
+        email: '',
+        password: '',
+      });
+      
+      const loginMessage = ref(null);
+      
+      const showPassword = ref(false);
+      
+      const isSubmitting = ref(false);
+      
+      const handleSubmit = async () => {
+        isSubmitting.value = true;
         try {
-          // Simulação de uma chamada de API
-          // Substitua este trecho pelo seu código de autenticação real
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          
-          // Exemplo de resposta bem-sucedida
-          // Na implementação real, você faria uma requisição ao seu backend
-          console.log('Dados enviados:', this.formData);
-          
-          // Simula login bem-sucedido
-          this.loginMessage = {
-            type: 'success',
-            text: 'Login realizado com sucesso!'
-          };
-          
-          // Em um caso real, você pode redirecionar ou emitir um evento
-          this.$emit('login-success', this.formData);
-          
+          const { data, error } = await supabase.auth.signInWithPassword({
+            email: formData.value.email,
+            password: formData.value.password,
+          });
+          if (error) {
+            loginMessage.value = {
+              type: 'error',
+              text: 'Erro ao realizar login. Verifique suas credenciais!',
+            };
+          } else {
+            loginMessage.value = {
+              type: 'success',
+              text: 'Login realizado com sucesso!',
+            };
+          }
         } catch (error) {
-          // Tratamento de erro
-          this.loginMessage = {
+          console.error(error);
+          loginMessage.value = {
             type: 'error',
-            text: 'Falha ao realizar login. Tente novamente.'
+            text: 'Erro ao realizar login. Verifique suas credenciais!',
           };
-          console.error('Erro de login:', error);
         } finally {
-          this.isSubmitting = false;
+          isSubmitting.value = false;
         }
-      }
-    }
-  }
+      };
+      
+      return {
+        formData,
+        errors,
+        loginMessage,
+        showPassword,
+        handleSubmit,
+        isSubmitting,
+      };
+    },
+  };
   </script>
   
   <style scoped>

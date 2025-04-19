@@ -1,11 +1,10 @@
 <template>
     <div class="cadastro-aluno-container">
-      <section class="cadastro-aluno" v-if="aluno">
+      <section v-if="aluno" class="cadastro-aluno">
         <h2>Cadastro de Aluno</h2>
-        
         <!-- Container das duas colunas principais -->
         <div class="columns-container">
-          <!-- Coluna da esquerda -->
+          <!-- Coluna da esquerda (Formulário) -->
           <div class="left-column">
             <div class="form-group">
               <label for="ra">Registro Acadêmico (RA)</label>
@@ -76,6 +75,7 @@
             <div class="foto-container">
               <div class="foto-preview">
                 <img v-if="urlImagem" :src="urlImagem" alt="Foto do Aluno">
+                <img v-else-if="aluno.url_foto" :src="aluno.url_foto" alt="Foto do Aluno">
                 <div v-else class="placeholder">Foto do aluno</div>
               </div>
   
@@ -170,90 +170,48 @@
           </button>
         </div>
       </section>
+      <section v-else class="cadastro-aluno-loading">
+        <h2>Carregando dados do aluno...</h2>
+      </section>
     </div>
-  </template>
+</template>
   
-  <script>
+<script>
+import alunoService from '../services/alunoService';
+
 export default {
   name: 'EditarAluno',
   data() {
     return {
-      aluno: {
-        ra: '',
-        nome: '',
-        email: '',
-        telefone: '',
-        dataNascimento: '',
-        sala: '',
-        periodo: '',
-        endereco: '',
-        foto: null
-      },
-      alunos: [
-        { ra: '0762458570', nome: 'Luiza Souza Ferreira' },
-        { ra: '7466974801', nome: 'Erick Dias Lima' },
-        { ra: '4555386233', nome: 'Luis Rodrigues Cunha' },
-        { ra: '4076887244', nome: 'Maria Oliveira Gomes' },
-        { ra: '3186025363', nome: 'Eduardo Souza Fernandes' },
-        { ra: '4747409869', nome: 'Leticia Castro Martins' }
-      ],
+      aluno: null,
       urlImagem: null
+    };
+  },
+  async mounted() {
+    const ra = this.$route.params.ra;
+    console.log('RA recebido pela rota:', ra);
+    try {
+      this.aluno = await alunoService.buscarAlunoPorRa(ra);
+      console.log('Aluno retornado do Supabase:', this.aluno);
+      if (!this.aluno) {
+        alert('Aluno não encontrado');
+        this.$router.push('/alunos');
+      }
+    } catch (e) {
+      console.error('Erro ao buscar aluno:', e);
+      alert('Erro ao buscar aluno');
+      this.$router.push('/alunos');
     }
   },
-  mounted() {
-    // Usar mounted em vez de created
-    this.buscarAluno(this.$route.params.ra)
-    console.log('Parâmetros da rota:', this.$route.params);
-  },
   methods: {
-    buscarAluno(ra) {
-      console.log('RA recebido:', ra) // Debug
-      
-      // Remove todos os caracteres que não são números para comparação
-      const raLimpo = ra.replace(/[^0-9]/g, '')
-      
-      // Encontra o aluno com base no RA, ignorando formatação
-      const alunoEncontrado = this.alunos.find(aluno => 
-        aluno.ra.replace(/[^0-9]/g, '') === raLimpo
-      )
-      
-      console.log('Aluno encontrado:', alunoEncontrado) // Debug
-      
-      if (alunoEncontrado) {
-        // Preenche todos os campos do aluno
-        this.aluno = {
-          ra: alunoEncontrado.ra,
-          nome: alunoEncontrado.nome,
-          email: `${alunoEncontrado.nome.toLowerCase().replace(/\s/g, '.')}@exemplo.com`,
-          telefone: '(11) 98765-4321',
-          dataNascimento: '2000-01-01',
-          sala: 'Sala 101',
-          periodo: 'Manhã',
-          endereco: 'Rua Exemplo, 123 - São Paulo, SP',
-          foto: null
-        }
-        
-        // Se quiser adicionar uma imagem padrão
-        this.urlImagem = ''
-      } else {
-        console.error('Aluno não encontrado para o RA:', ra)
-        alert('Aluno não encontrado')
-        this.$router.push('/alunos')
+    async atualizarAluno() {
+      try {
+        await alunoService.atualizarAluno(this.aluno.ra, this.aluno);
+        alert('Aluno atualizado com sucesso!');
+        this.$router.push('/alunos');
+      } catch (e) {
+        alert('Erro ao atualizar aluno');
       }
-    },
-    atualizarAluno() {
-      if (this.validarFormulario()) {
-        console.log('Dados do aluno atualizados:', this.aluno)
-        alert('Aluno atualizado com sucesso!')
-        this.$router.push('/alunos')
-      }
-    },
-    validarFormulario() {
-      if (!this.aluno.nome || !this.aluno.ra || !this.aluno.dataNascimento) {
-        alert('Preencha todos os campos obrigatórios')
-        return false
-      }
-      return true
     },
     limparFormulario() {
       this.aluno = {
@@ -265,17 +223,12 @@ export default {
         sala: '',
         periodo: '',
         endereco: '',
-        foto: null
-      }
-      this.urlImagem = null
-    },
-    handleFileUpload(event) {
-      const file = event.target.files[0]
-      this.aluno.foto = file
-      this.urlImagem = URL.createObjectURL(file)
+        url_foto: null
+      };
+      this.urlImagem = null;
     }
   }
-}
+};
 </script>
   
   <style scoped>

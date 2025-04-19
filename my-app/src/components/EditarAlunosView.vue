@@ -74,42 +74,49 @@
 </template>
 
 <script>
+import alunoService from '../services/alunoService';
+
 export default {
   name: 'EditarAlunos',
   data() {
     return {
       searchQuery: '',
-      alunos: [
-        { ra: '0762458570', nome: 'Luiza Souza Ferreira' },
-        { ra: '7466974801', nome: 'Erick Dias Lima' },
-        { ra: '4555386233', nome: 'Luis Rodrigues Cunha' },
-        { ra: '4076887244', nome: 'Maria Oliveira Gomes' },
-        { ra: '3186025363', nome: 'Eduardo Souza Fernandes' },
-        { ra: '4747409869', nome: 'Leticia Castro Martins' }
-      ]
-    }
+      alunos: [],
+      carregando: false,
+      erro: null
+    };
   },
   computed: {
     filteredAlunos() {
-      return this.alunos.filter(aluno => 
-        aluno.nome.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        aluno.ra.includes(this.searchQuery)
-      )
+      if (!this.searchQuery) return this.alunos;
+      const query = this.searchQuery.toLowerCase();
+      return this.alunos.filter(aluno =>
+        aluno.nome.toLowerCase().includes(query) ||
+        (aluno.ra && aluno.ra.includes(this.searchQuery))
+      );
     }
   },
   methods: {
     editarAluno(aluno) {
-      this.$router.push(`/editar-aluno/${aluno.ra}`)
-      // Lógica para editar aluno
-      console.log('Editando aluno:', aluno)
+      this.$router.push(`/editar-aluno/${aluno.ra}`);
     },
-    excluirAluno(aluno) {
-      // Lógica para excluir aluno
-      console.log('Excluindo aluno:', aluno)
+    async carregarAlunos() {
+      this.carregando = true;
+      try {
+        this.alunos = await alunoService.listarAlunos();
+      } catch (e) {
+        this.erro = 'Erro ao carregar alunos.';
+      } finally {
+        this.carregando = false;
+      }
     }
+  },
+  mounted() {
+    this.carregarAlunos();
   }
-}
+};
 </script>
+
 
 <style scoped>
 @import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';

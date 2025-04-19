@@ -83,7 +83,8 @@
               <input 
                 type="file" 
                 id="carregarFoto" 
-                @change="handleFileUpload" 
+                ref="carregarFoto"
+                @change="handleFileUpload($event)" 
                 accept="image/*"
                 hidden
               >
@@ -174,63 +175,90 @@
 </template>
 
 <script>
+import { createAluno } from '../services/alunosService'
+import { supabase } from '../supabase'
+
 export default {
-  name: 'CadastroAluno',
   data() {
     return {
       aluno: {
-        nome: '',
         ra: '',
+        nome: '',
         email: '',
         telefone: '',
         dataNascimento: '',
+        endereco: '',
         sala: '',
         periodo: '',
-        endereco: '',
         foto: null
       },
       urlImagem: null
     }
   },
   methods: {
-    salvarAluno() {
-      if (this.validarFormulario()) {
-        // Lógica para salvar o aluno com foto
-        const formData = new FormData();
-        Object.entries(this.aluno).forEach(([key, value]) => {
-          formData.append(key, value);
+    async salvarAluno() {
+      if (!this.validarFormulario()) return;
+
+      let url_foto = null;
+      if (this.aluno.foto) {
+        // Upload da imagem para o Supabase Storage
+        const fileExt = this.aluno.foto.name.split('.').pop();
+        const fileName = `${this.aluno.ra}_${Date.now()}.${fileExt}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage.from('fotos').upload(fileName, this.aluno.foto, {
+          upsert: true
         });
-        
-        // Simulação de envio
-        console.log('Enviando dados:', this.aluno);
+        if (uploadError) {
+          alert('Erro ao enviar a foto: ' + uploadError.message);
+          return;
+        }
+        // Recupera a URL pública
+        const { data: publicUrlData } = supabase.storage.from('fotos').getPublicUrl(fileName);
+        url_foto = publicUrlData.publicUrl;
+      }
+      // Monta objeto para o banco
+      const alunoDb = {
+        ra: this.aluno.ra,
+        nome: this.aluno.nome,
+        email: this.aluno.email,
+        telefone: this.aluno.telefone,
+        data_nascimento: this.aluno.dataNascimento,
+        endereco: this.aluno.endereco,
+        sala: this.aluno.sala,
+        periodo: this.aluno.periodo,
+        url_foto: url_foto
+      };
+      const { data, error } = await createAluno(alunoDb);
+      if (error) {
+        alert('Erro ao cadastrar aluno: ' + error.message);
+      } else {
+        alert('Aluno cadastrado com sucesso!');
         this.limparFormulario();
       }
     },
-    validarFormulario() {
-      if (!this.aluno.nome || !this.aluno.ra || !this.aluno.dataNascimento) {
-        alert('Preencha todos os campos obrigatórios');
-        return false;
+    handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.aluno.foto = file;
+        this.urlImagem = URL.createObjectURL(file);
       }
-      return true;
     },
     limparFormulario() {
       this.aluno = {
-        nome: '',
         ra: '',
+        nome: '',
         email: '',
         telefone: '',
         dataNascimento: '',
+        endereco: '',
         sala: '',
         periodo: '',
-        endereco: '',
         foto: null
       };
       this.urlImagem = null;
     },
-    handleFileUpload(event) {
-      const file = event.target.files[0];
-      this.aluno.foto = file;
-      this.urlImagem = URL.createObjectURL(file);
+    validarFormulario() {
+      // Implementar validação do formulário aqui
+      return true;
     }
   }
 }

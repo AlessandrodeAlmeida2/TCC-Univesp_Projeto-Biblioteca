@@ -81,7 +81,12 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: LoginView
-    },    
+    },
+    {
+      path: '/cadastrar',
+      name: 'cadastrar',
+      component: () => import('@/components/CadastroAdmin.vue')
+    },  
     {
       path: '/footer',
       name: 'footer',
@@ -97,7 +102,7 @@ async function getUser(next: NavigationGuardNext) {
   if (localUser.data.session == null) {
     next('/login');
   }
-  else if (localUser.data.session == "adimin@email.com") {
+  else if (localUser.data.session == "admin@email.com") {
     next('/home');
   } else {
     next('/aluno');
