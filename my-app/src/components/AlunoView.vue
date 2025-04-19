@@ -5,8 +5,8 @@
         <div class="user-info">
           <img src="" alt="Foto do Aluno" class="profile-image" />
           <div class="user-details">
-            <h2>Maria Silva</h2>
-            <p>RA: 2025.1234</p>
+            <h2>{{ alunoInfo.nome }}</h2>
+            <p>RA: {{ alunoInfo.ra }}</p>
           </div>
         </div>
       </header>
@@ -24,10 +24,12 @@
             />
             <select v-model="categoriaFiltro" class="categoria-select">
               <option value="">Todas as Categorias</option>
-              <option value="literatura">Literatura</option>
-              <option value="cientifica">Científica</option>
-              <option value="historia">História</option>
-              <option value="romance">Romance</option>
+              <option value="Literatura Brasileira">Literatura Brasileira</option>
+              <option value="Literatura Infantil">Literatura Infantil</option>
+              <option value="Fantasia">Fantasia</option>
+              <option value="Romance">Romance</option>
+              <option value="Ficção Científica">Ficção Científica</option>
+              <option value="História">História</option>
             </select>
           </div>
   
@@ -61,6 +63,39 @@
           </div>
         </section>
   
+        <section class="meus-reservas">
+          <h2>Minhas Reservas</h2>
+          <table class="tabela-reservas">
+            <thead>
+              <tr>
+                <th>Livro</th>
+                <th>Data da Reserva</th>
+                <th>Validade</th>
+                <th>Status</th>
+                <th>Código</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="reserva in reservas" :key="reserva.id">
+                <td>
+                  <div class="livro-linha">
+                    
+                    <span>{{ reserva.livro.titulo }}</span>
+                  </div>
+                </td>
+                <td>{{ reserva.dataReserva ? reserva.dataReserva.substring(0,10) : '' }}</td>
+                <td>{{ reserva.dataValidade }}</td>
+                <td>
+                  <span :class="['status', reserva.status.toLowerCase()]">
+                    {{ reserva.status }}
+                  </span>
+                </td>
+                <td>{{ reserva.codigo }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
         <section class="meus-emprestimos">
           <h2>Meus Empréstimos</h2>
           
@@ -92,7 +127,7 @@
               >
                 <td>
                   <div class="livro-linha">
-                    <img :src="emprestimo.livro.imagem" :alt="emprestimo.livro.titulo" />
+                    
                     <span>{{ emprestimo.livro.titulo }}</span>
                   </div>
                 </td>
@@ -128,6 +163,8 @@
   </template>
   
   <script>
+  import { supabase } from '../supabase';
+
   export default {
     name: 'AlunoDashboard',
     data() {
@@ -136,82 +173,155 @@
         categoriaFiltro: '',
         filtroStatus: 'Todos',
         statusEmprestimo: ['Todos', 'Em Andamento', 'Atrasado', 'Concluído'],
-        livros: [
-          {
-            id: 1,
-            titulo: 'Dom Casmurro',
-            autor: 'Machado de Assis',
-            categoria: 'Literatura',
-            imagem: '/api/placeholder/200/300',
-            disponivel: true
-          },
-          {
-            id: 2,
-            titulo: 'O Pequeno Príncipe',
-            autor: 'Antoine de Saint-Exupéry',
-            categoria: 'Literatura',
-            imagem: '/api/placeholder/200/300',
-            disponivel: false
-          },
-          {
-            id: 3,
-            titulo: 'Física Moderna',
-            autor: 'Diversos Autores',
-            categoria: 'Científica',
-            imagem: '/api/placeholder/200/300',
-            disponivel: true
-          }
-        ],
-        emprestimos: [
-          {
-            id: 1,
-            livro: {
-              titulo: 'Harry Potter e a Pedra Filosofal',
-              imagem: '/api/placeholder/200/300'
-            },
-            dataRetirada: '01/03/2025',
-            dataDevolucao: '15/03/2025',
-            status: 'Em Andamento'
-          },
-          {
-            id: 2,
-            livro: {
-              titulo: 'A Culpa é das Estrelas',
-              imagem: '/api/placeholder/200/300'
-            },
-            dataRetirada: '20/02/2025',
-            dataDevolucao: '07/03/2025',
-            status: 'Atrasado'
-          }
-        ]
+        livros: [],
+        emprestimos: [],
+        reservas: [],
+        alunoInfo: { id: null, nome: '', ra: '' },
+      };
+    },
+    async mounted() {
+      // Buscar RA do aluno do localStorage, route params ou contexto
+      let ra = null;
+      if (this.$route && this.$route.params && this.$route.params.ra) {
+        ra = this.$route.params.ra;
+      } else if (localStorage.getItem('aluno_ra')) {
+        ra = localStorage.getItem('aluno_ra');
+      }
+      if (!ra) {
+        alert('RA do aluno não encontrado.');
+        return;
+      }
+      await this.buscarAlunoInfo(ra);
+      if (this.alunoInfo.id) {
+        // Atualiza o localStorage para refletir o aluno correto
+        localStorage.setItem('aluno', JSON.stringify(this.alunoInfo));
+        localStorage.setItem('aluno_ra', this.alunoInfo.ra);
+        await this.buscarLivros();
+        await this.buscarEmprestimos();
+        await this.buscarReservas();
       }
     },
     computed: {
       livrosFiltrados() {
         return this.livros.filter(livro => {
           const matchSearch = livro.titulo.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-                              livro.autor.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-                              livro.categoria.toLowerCase().includes(this.searchQuery.toLowerCase());
-          
-          const matchCategoria = !this.categoriaFiltro || 
-                                  livro.categoria.toLowerCase() === this.categoriaFiltro.toLowerCase();
-          
+            livro.autor.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+            livro.categoria.toLowerCase().includes(this.searchQuery.toLowerCase());
+          const matchCategoria = !this.categoriaFiltro || livro.categoria.toLowerCase() === this.categoriaFiltro.toLowerCase();
           return matchSearch && matchCategoria;
         });
       },
       emprestimosFiltrados() {
-        return this.emprestimos.filter(emprestimo => 
-          this.filtroStatus === 'Todos' || emprestimo.status === this.filtroStatus
+        return this.emprestimos.filter(e =>
+          this.filtroStatus === 'Todos' || e.status === this.filtroStatus
         );
       }
     },
     methods: {
-      reservarLivro(livro) {
-        // Lógica de reserva de livro
-        alert(`Livro "${livro.titulo}" reservado com sucesso!`);
+      async buscarAlunoInfo(ra) {
+        // Busca todas as informações do aluno pela tabela 'alunos' usando o RA
+        const { data, error } = await supabase
+          .from('alunos')
+          .select('id, nome, ra')
+          .eq('ra', ra)
+          .single();
+        if (!error && data) {
+          this.alunoInfo = { id: data.id, nome: data.nome, ra: data.ra };
+        } else {
+          alert('Aluno não encontrado para o RA informado.');
+        }
+      },
+      async buscarLivros() {
+        // Busca todos os livros disponíveis
+        const { data, error } = await supabase
+          .from('livros')
+          .select('*');
+        if (!error && data) {
+          this.livros = data.map(livro => ({
+            id: livro.id,
+            titulo: livro.titulo,
+            autor: livro.autor,
+            categoria: livro.categoria,
+            status: livro.status,
+            disponivel: livro.status === 'disponivel',
+            imagem: '/api/placeholder/200/300'
+          }));
+        }
+      },
+      async buscarEmprestimos() {
+        // Busca os empréstimos do aluno logado usando o id da tabela 'alunos'
+        if (!this.alunoInfo.id) return;
+        const { data, error } = await supabase
+          .from('emprestimos')
+          .select('id, livro_id, data_retirada, data_devolucao_prevista, status')
+          .eq('aluno_id', this.alunoInfo.id);
+        if (!error && data) {
+          this.emprestimos = data.map(e => {
+            const livroObj = this.livros.find(l => l.id === e.livro_id);
+            return {
+              id: e.id,
+              livro: {
+                titulo: livroObj ? livroObj.titulo : e.livro_id,
+              },
+              dataRetirada: e.data_retirada,
+              dataDevolucao: e.data_devolucao_prevista,
+              status: e.status
+            };
+          });
+        }
+      },
+      async buscarReservas() {
+        // Busca as reservas do aluno logado usando o id da tabela 'alunos'
+        if (!this.alunoInfo.id) return;
+        const { data, error } = await supabase
+          .from('reservas')
+          .select('id, livro_id, data_reserva, data_validade, status, codigo_verificacao')
+          .eq('aluno_id', this.alunoInfo.id);
+        if (!error && data) {
+          this.reservas = data.map(r => {
+            const livroObj = this.livros.find(l => l.id === r.livro_id);
+            return {
+              id: r.id,
+            livro: {
+              titulo: livroObj ? livroObj.titulo : r.livro_id,
+            },
+            dataReserva: r.data_reserva,
+            dataValidade: r.data_validade,
+            status: r.status,
+            codigo: r.codigo_verificacao
+            }
+            
+          });
+        }
+      },
+      async reservarLivro(livro) {
+        if (!this.alunoInfo.id) {
+          alert('Aluno não identificado.');
+          return;
+        }
+        // Cria uma nova reserva
+        const validade = new Date();
+        validade.setDate(validade.getDate() + 3); // 3 dias de validade
+        const codigoVerificacao = Math.random().toString(36).substring(2, 10).toUpperCase();
+        const { error } = await supabase
+          .from('reservas')
+          .insert({
+            aluno_id: this.alunoInfo.id,
+            livro_id: livro.id,
+            data_validade: validade.toISOString().split('T')[0],
+            status: 'Pendente',
+            codigo_verificacao: codigoVerificacao
+          });
+        if (!error) {
+          alert(`Reserva do livro "${livro.titulo}" realizada com sucesso! Código: ${codigoVerificacao}`);
+          await this.buscarLivros();
+          await this.buscarReservas();
+        } else {
+          alert('Erro ao reservar livro.');
+        }
       }
     }
-  }
+  };
   </script>
   
   <style scoped>
@@ -364,6 +474,31 @@
   .btn-reservar:disabled {
     background-color: var(--cor-cinza);
     cursor: not-allowed;
+  }
+
+  /* Seção de Reservas */
+  .meus-reservas {
+    background-color: var(--cor-branco);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .tabela-reservas {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .tabela-reservas th, .tabela-reservas td {
+    border: 1px solid var(--cor-cinza);
+    padding: 10px;
+    text-align: left;
+  }
+
+  .tabela-reservas th {
+    background-color: var(--cor-azul);
+    color: var(--cor-branco);
   }
   
   /* Seção de Empréstimos */
