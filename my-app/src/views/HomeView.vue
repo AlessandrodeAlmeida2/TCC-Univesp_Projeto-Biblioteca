@@ -92,7 +92,7 @@
             <button class="btn-acao" @click="cadastrarEmprestimo">
               Cadastrar Empréstimo
             </button>
-            <button class="btn-acao" @click="editarEmprestimo">
+            <button class="btn-acao" @click="editarEmprestimos">
               Editar Empréstimo
             </button>
             <button class="btn-acao" @click="consultarEmprestimo">
@@ -136,8 +136,8 @@ export default {
     cadastrarEmprestimo() {
       this.$router.push('/cadastro-emprestimo');
     },
-    editarEmprestimo() {
-      this.$router.push('/editar-emprestimo');
+    editarEmprestimos() {
+      this.$router.push('/editar-emprestimos');
     },
     consultarEmprestimo() {
       this.$router.push('/consulta-emprestimo');

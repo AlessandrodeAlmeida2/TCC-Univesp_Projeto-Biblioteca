@@ -44,7 +44,7 @@
         </div>
       </form><br>
       <div>
-        <h4>Se não tiver cadastro, <a class="cadastro" href="/cadastrar"> cadastre-se</a></h4>
+        <h4><a class="cadastro" href="/login-aluno">Sou aluno</a></h4>
       </div>
     </div>
   </template>

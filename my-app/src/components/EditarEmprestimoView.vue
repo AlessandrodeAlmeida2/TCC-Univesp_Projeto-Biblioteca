@@ -1,115 +1,162 @@
 <template>
-    <section class="edicao-emprestimos">
-      <h2>Edição de Empréstimo</h2>
-      
-      <form @submit.prevent="atualizarEmprestimo" class="formulario-emprestimo">
-        <div class="form-grupo">
-          <label for="id">ID do Empréstimo</label>
-          <input 
-            type="text" 
-            id="id" 
-            v-model="emprestimoEditado.id" 
-            placeholder="ID do empréstimo"
-            readonly
-          >
-        </div>
-  
-        <div class="form-grupo">
-          <label for="aluno">Aluno</label>
-          <input 
-            type="text" 
-            id="aluno" 
-            v-model="emprestimoEditado.aluno" 
-            placeholder="Nome do aluno"
-            required
-          >
-        </div>
-  
-        <div class="form-grupo">
-          <label for="livro">Livro</label>
-          <select 
-            id="livro" 
-            v-model="emprestimoEditado.livro"
-            required
-          >
-            <option value="Dom Casmurro">Dom Casmurro</option>
-            <option value="O Pequeno Príncipe">O Pequeno Príncipe</option>
-            <option value="Harry Potter e a Pedra Filosofal">Harry Potter e a Pedra Filosofal</option>
-            <option value="A Culpa é das Estrelas">A Culpa é das Estrelas</option>
-          </select>
-        </div>
-  
-        <div class="form-grupo">
-          <label for="dataRetirada">Data de Retirada</label>
-          <input 
-            type="date" 
-            id="dataRetirada" 
-            v-model="emprestimoEditado.dataRetirada"
-            required
-          >
-        </div>
-  
-        <div class="form-grupo">
-          <label for="dataDevolucao">Data de Devolução</label>
-          <input 
-            type="date" 
-            id="dataDevolucao" 
-            v-model="emprestimoEditado.dataDevolucao"
-            required
-          >
-        </div>
-  
-        <div class="form-grupo">
-          <label for="status">Status</label>
-          <select 
-            id="status" 
-            v-model="emprestimoEditado.status"
-            required
-          >
-            <option value="Em Andamento">Em Andamento</option>
-            <option value="Atrasado">Atrasado</option>
-            <option value="Devolvido">Devolvido</option>
-          </select>
-        </div>
-  
-        <div class="form-acoes">
-          <button type="submit" class="btn-atualizar">
-            <i class="fas fa-save"></i> Atualizar Empréstimo
-          </button>
-          <button type="button" class="btn-cancelar" @click="cancelarEdicao">
-            <i class="fas fa-times"></i> Cancelar
-          </button>
-        </div>
-      </form>
-    </section>
-  </template>
-  
-  <script>
-  export default {
-    name: 'EdicaoEmprestimo',
-    props: {
-      emprestimo: {
-        type: Object,
-        required: true
-      }
-    },
-    data() {
-      return {
-        emprestimoEditado: { ...this.emprestimo }
-      }
-    },
-    methods: {
-      atualizarEmprestimo() {
-        // Emitir evento para o componente pai com o empréstimo atualizado
-        this.$emit('emprestimo-atualizado', { ...this.emprestimoEditado });
+  <section class="edicao-emprestimos">
+    <h2>Edição de Empréstimo</h2>
+    <form @submit.prevent="atualizarEmprestimo" class="formulario-emprestimo">
+      <div class="form-grupo">
+        <label for="id">ID do Empréstimo</label>
+        <input 
+          type="text" 
+          id="id" 
+          v-model="emprestimoEditado.id" 
+          readonly
+        >
+      </div>
+      <div class="form-grupo">
+        <label for="aluno_id">Aluno</label>
+        <select 
+          id="aluno_id" 
+          v-model="emprestimoEditado.aluno_id"
+          required
+        >
+          <option value="">Selecione um aluno</option>
+          <option v-for="aluno in alunos" :key="aluno.id" :value="aluno.id">
+            {{ aluno.nome }}
+          </option>
+        </select>
+      </div>
+      <div class="form-grupo">
+        <label for="livro_id">Livro</label>
+        <select 
+          id="livro_id" 
+          v-model="emprestimoEditado.livro_id"
+          required
+        >
+          <option value="">Selecione um livro</option>
+          <option v-for="livro in livros" :key="livro.id" :value="livro.id">
+            {{ livro.titulo }}
+          </option>
+        </select>
+      </div>
+      <div class="form-grupo">
+        <label for="data_retirada">Data de Retirada</label>
+        <input 
+          type="date" 
+          id="data_retirada" 
+          v-model="emprestimoEditado.data_retirada"
+          required
+        >
+      </div>
+      <div class="form-grupo">
+        <label for="data_devolucao_prevista">Data de Devolução Prevista</label>
+        <input 
+          type="date" 
+          id="data_devolucao_prevista" 
+          v-model="emprestimoEditado.data_devolucao_prevista"
+          required
+        >
+      </div>
+      <div class="form-grupo">
+        <label for="status">Status</label>
+        <select 
+          id="status" 
+          v-model="emprestimoEditado.status"
+          required
+        >
+          <option value="Em Andamento">Em Andamento</option>
+          <option value="Atrasado">Atrasado</option>
+          <option value="Devolvido">Devolvido</option>
+        </select>
+      </div>
+      <div class="form-grupo">
+        <label for="observacoes">Observações</label>
+        <textarea 
+          id="observacoes" 
+          v-model="emprestimoEditado.observacoes"
+          placeholder="Observações (opcional)"
+          rows="2"
+        ></textarea>
+      </div>
+      <div class="form-acoes">
+        <button type="submit" class="btn-atualizar">
+          <i class="fas fa-save"></i> Atualizar Empréstimo
+        </button>
+        <button type="button" class="btn-cancelar" @click="cancelarEdicao">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
+      </div>
+    </form>
+  </section>
+</template>
+
+<script>
+import { supabase } from '../supabase'
+import { useRoute, useRouter } from 'vue-router'
+
+export default {
+  name: 'EdicaoEmprestimo',
+  data() {
+    return {
+      emprestimoEditado: {
+        id: '',
+        aluno_id: '',
+        livro_id: '',
+        data_retirada: '',
+        data_devolucao_prevista: '',
+        status: '',
+        observacoes: ''
       },
-      cancelarEdicao() {
-        // Emitir evento para fechar o modo de edição
-        this.$emit('cancelar-edicao');
+      alunos: [],
+      livros: []
+    }
+  },
+  async mounted() {
+    const route = useRoute();
+    const id = route.params.id;
+    await this.buscarAlunos();
+    await this.buscarLivros();
+    await this.buscarEmprestimo(id);
+  },
+  methods: {
+    async buscarEmprestimo(id) {
+      const { data, error } = await supabase
+        .from('emprestimos')
+        .select('*')
+        .eq('id', id)
+        .single();
+      if (!error) this.emprestimoEditado = data;
+    },
+    async buscarAlunos() {
+      const { data, error } = await supabase
+        .from('alunos')
+        .select('id, nome');
+      if (!error) this.alunos = data;
+    },
+    async buscarLivros() {
+      const { data, error } = await supabase
+        .from('livros')
+        .select('id, titulo');
+      if (!error) this.livros = data;
+    },
+    async atualizarEmprestimo() {
+      const { id, ...dados } = this.emprestimoEditado;
+      const { error } = await supabase
+        .from('emprestimos')
+        .update(dados)
+        .eq('id', id);
+      if (error) {
+        alert('Erro ao atualizar empréstimo!');
+      } else {
+        alert('Empréstimo atualizado com sucesso!');
+        this.$router.push('/editar-emprestimos');
       }
+    },
+    cancelarEdicao() {
+      this.$router.push('/editar-emprestimos');
     }
   }
-  </script>
+}
+</script>
+
   
   <style scoped>
   .edicao-emprestimos {

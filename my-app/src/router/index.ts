@@ -19,7 +19,7 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
-      path: '/aluno',
+      path: '/aluno/:ra',
       name: 'aluno',
       component: () => import('@/components/AlunoView.vue'),
       //meta: { requiresAuth: true }
@@ -70,7 +70,12 @@ const router = createRouter({
       component: () => import('../components/CadastroEmprestimoView.vue')
     },
     {
-      path: '/editar-emprestimo',
+      path: '/editar-emprestimos',
+      name: 'editar-emprestimos',
+      component: () => import('../components/EditarEmprestimos.vue')
+    },
+    {
+      path: '/editar-emprestimo/:id',
       name: 'editar-emprestimo',
       component: () => import('../components/EditarEmprestimoView.vue')
     },
@@ -78,6 +83,11 @@ const router = createRouter({
       path: '/consulta-emprestimo',
       name: 'consulta-emprestimo',
       component: () => import('../components/ConsultaEmprestimoView.vue')
+    },
+    {
+      path: '/login-aluno',
+      name: 'login-aluno',
+      component: () => import('../components/LoginAluno.vue')
     },
     {
       path: '/login',
