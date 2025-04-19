@@ -80,39 +80,66 @@
   </template>
   
   <script>
-  export default {
-    name: 'CadastroLivro',
-    data() {
-      return {
-        novoLivro: {
-          codigo: '',
-          titulo: '',
-          autor: '',
-          categoria: '',
-          status: 'Disponível'
+import { createLivro } from '../services/livrosService.js';
+
+export default {
+  name: 'CadastroLivro',
+  data() {
+    return {
+      novoLivro: {
+        codigo: '',
+        titulo: '',
+        autor: '',
+        categoria: '',
+        status: 'Disponível'
+      },
+      mensagem: '',
+      erro: ''
+    };
+  },
+  methods: {
+    async salvarLivro() {
+      this.mensagem = '';
+      this.erro = '';
+      // Converter status para o padrão do banco
+      let statusDb = this.novoLivro.status.toLowerCase();
+      if (statusDb === 'disponível') statusDb = 'disponivel';
+      // Montar objeto conforme tabela
+      const livroParaSalvar = {
+        codigo: this.novoLivro.codigo,
+        titulo: this.novoLivro.titulo,
+        autor: this.novoLivro.autor,
+        categoria: this.novoLivro.categoria,
+        status: statusDb
+      };
+      try {
+        const { data, error } = await createLivro(livroParaSalvar);
+        console.log('Tentando cadastrar livro:', livroParaSalvar);
+        console.log('Resposta do Supabase:', { data, error });
+        if (error) {
+          this.erro = 'Erro ao cadastrar livro: ' + (error.message || JSON.stringify(error));
+        } else if (!data || (Array.isArray(data) && data.length === 0)) {
+          this.erro = 'Livro não foi cadastrado. Nenhum dado retornado.';
+        } else {
+          this.mensagem = 'Livro cadastrado com sucesso!';
+          this.limparFormulario();
         }
+      } catch (e) {
+        this.erro = 'Erro inesperado ao cadastrar livro.';
       }
     },
-    methods: {
-      salvarLivro() {
-        // Emitir evento para o componente pai com o novo livro
-        this.$emit('livro-adicionado', { ...this.novoLivro });
-        
-        // Limpar formulário após salvar
-        this.limparFormulario();
-      },
-      limparFormulario() {
-        this.novoLivro = {
-          codigo: '',
-          titulo: '',
-          autor: '',
-          categoria: '',
-          status: 'Disponível'
-        };
-      }
+    limparFormulario() {
+      this.novoLivro = {
+        codigo: '',
+        titulo: '',
+        autor: '',
+        categoria: '',
+        status: 'Disponível'
+      };
     }
   }
-  </script>
+};
+</script>
   
   <style scoped>
   .cadastro-livros {

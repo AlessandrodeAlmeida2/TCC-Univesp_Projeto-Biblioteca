@@ -108,57 +108,49 @@
 </template>
 
 <script>
+import { supabase } from '../supabase'
 export default {
-name: 'ConsultaEmprestimo',
-data() {
-  return {
-    emprestimos: [
-      {
-        id: 1001,
-        aluno: 'Maria Silva',
-        livro: 'Dom Casmurro',
-        dataRetirada: '01/03/2025',
-        dataDevolucao: '15/03/2025',
-        status: 'Em Andamento'
-      },
-      {
-        id: 1000,
-        aluno: 'João Santos',
-        livro: 'O Pequeno Príncipe',
-        dataRetirada: '28/02/2025',
-        dataDevolucao: '14/03/2025',
-        status: 'Em Andamento'
-      },
-      {
-        id: 999,
-        aluno: 'Pedro Oliveira',
-        livro: 'Harry Potter',
-        dataRetirada: '25/02/2025',
-        dataDevolucao: '01/03/2025',
-        status: 'Atrasado'
-      },
-      {
-        id: 998,
-        aluno: 'Ana Souza',
-        livro: 'A Culpa é das Estrelas',
-        dataRetirada: '23/02/2025',
-        dataDevolucao: '01/03/2025',
-        status: 'Devolvido'
+  name: 'ConsultaEmprestimoView',
+  data() {
+    return {
+      emprestimos: []
+    }
+  },
+  async mounted() {
+    await this.buscarEmprestimos();
+  },
+  methods: {
+    async buscarEmprestimos() {
+      // Busca todos os empréstimos, join aluno/livro, ordena atrasados primeiro
+      const { data, error } = await supabase
+        .from('emprestimos')
+        .select('id, data_retirada, data_devolucao_prevista, status, alunos (nome), livros (titulo)')
+      if (!error && data) {
+        // Ordena: atrasados primeiro, depois por data de retirada decrescente
+        this.emprestimos = data.sort((a, b) => {
+          if (a.status === 'Atrasado' && b.status !== 'Atrasado') return -1;
+          if (a.status !== 'Atrasado' && b.status === 'Atrasado') return 1;
+          return new Date(b.data_retirada) - new Date(a.data_retirada);
+        }).map(e => ({
+          id: e.id,
+          aluno: e.alunos?.nome || '',
+          livro: e.livros?.titulo || '',
+          dataRetirada: e.data_retirada,
+          dataDevolucao: e.data_devolucao_prevista,
+          status: e.status
+        }));
       }
-    ]
+    },
+    visualizarEmprestimo(emprestimo) {
+      console.log('Visualizando empréstimo:', emprestimo);
+    },
+    editarEmprestimo(emprestimo) {
+      this.$router.push(`/editar-emprestimo/${emprestimo.id}`);
+    },
+    devolverEmprestimo(emprestimo) {
+      console.log('Devolvendo empréstimo:', emprestimo);
+    }
   }
-},
-methods: {
-  visualizarEmprestimo(emprestimo) {
-    console.log('Visualizando empréstimo:', emprestimo);
-  },
-  editarEmprestimo(emprestimo) {
-    console.log('Editando empréstimo:', emprestimo);
-  },
-  devolverEmprestimo(emprestimo) {
-    console.log('Devolvendo empréstimo:', emprestimo);
-  }
-}
 }
 </script>
 

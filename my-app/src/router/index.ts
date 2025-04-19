@@ -16,10 +16,10 @@ const router = createRouter({
       name: 'home',
       component: HomeView,
       alias: '/home',
-      //meta: { requiresAuth: true }
+      meta: { requiresAuth: true }
     },
     {
-      path: '/aluno',
+      path: '/aluno/:ra',
       name: 'aluno',
       component: () => import('@/components/AlunoView.vue'),
       //meta: { requiresAuth: true }
@@ -50,7 +50,12 @@ const router = createRouter({
       component: () => import('../components/CadastroLivroView.vue')
     },
     {
-      path: '/editar-livro',
+      path: '/editar-livros',
+      name: 'editar-livros',
+      component: () => import('../components/EditarLivros.vue')
+    },
+    {
+      path: '/editar-livro/:id',
       name: 'editar-livro',
       component: () => import('../components/EditarLivroView.vue')
     },
@@ -65,7 +70,12 @@ const router = createRouter({
       component: () => import('../components/CadastroEmprestimoView.vue')
     },
     {
-      path: '/editar-emprestimo',
+      path: '/editar-emprestimos',
+      name: 'editar-emprestimos',
+      component: () => import('../components/EditarEmprestimos.vue')
+    },
+    {
+      path: '/editar-emprestimo/:id',
       name: 'editar-emprestimo',
       component: () => import('../components/EditarEmprestimoView.vue')
     },
@@ -75,13 +85,23 @@ const router = createRouter({
       component: () => import('../components/ConsultaEmprestimoView.vue')
     },
     {
+      path: '/login-aluno',
+      name: 'login-aluno',
+      component: () => import('../components/LoginAluno.vue')
+    },
+    {
       path: '/login',
       name: 'login',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: LoginView
-    },    
+    },
+    {
+      path: '/cadastrar',
+      name: 'cadastrar',
+      component: () => import('@/components/CadastroAdmin.vue')
+    },  
     {
       path: '/footer',
       name: 'footer',
@@ -96,11 +116,8 @@ async function getUser(next: NavigationGuardNext) {
 
   if (localUser.data.session == null) {
     next('/login');
-  }
-  else if (localUser.data.session == "adimin@email.com") {
-    next('/home');
   } else {
-    next('/aluno');
+    next();
   }
 }
 
