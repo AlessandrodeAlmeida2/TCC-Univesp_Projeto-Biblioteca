@@ -164,10 +164,10 @@
       <!-- Botões de ação -->
       <div class="form-actions">
         <button type="button" class="btn-cancelar" @click="limparFormulario">
-          Cancelar
+          <i class="fas fa-times"></i>Cancelar
         </button>
         <button type="submit" class="btn-salvar" @click="salvarAluno">
-          Salvar Aluno
+          <i class="fas fa-save"></i>Salvar Aluno
         </button>
       </div>
     </section>
@@ -391,9 +391,32 @@ export default {
   gap: 5px;
 }
 
+.btn-salvar, .btn-cancelar {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+  }
+
+  .btn-salvar {
+    background-color: var(--cor-azul);
+    color: var(--cor-branco);
+  }
+  
+  .btn-cancelar {
+    background-color: var(--cor-vermelho);
+    color: var(--cor-branco);
+  }
+
 @media (max-width: 768px) {
   .columns-container {
     grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column-reverse;
   }
   
   .right-column {
@@ -407,6 +430,11 @@ export default {
   
   .form-group label {
     text-align: left;
+  }
+
+  .form-row.periodo-container {
+    flex-direction: column;
+    gap: 10px;
   }
 }
 </style>
