@@ -290,7 +290,6 @@
             status: r.status,
             codigo: r.codigo_verificacao
             }
-            
           });
         }
       },
@@ -590,4 +589,113 @@
     background-color: var(--cor-vermelho);
     color: var(--cor-branco);
   }
+
+  /* Media queries para responsividade */
+@media (max-width: 768px) {
+  .aluno-dashboard {
+    padding: 10px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .filtros {
+    flex-direction: column;
+  }
+
+  .lista-livros {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+
+  .livro-imagem img {
+    height: 200px;
+  }
+
+  .livro-detalhes h3 {
+    font-size: 1rem;
+  }
+
+  .tabs {
+    flex-wrap: wrap;
+  }
+
+  .tabs button {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .user-details h2 {
+    font-size: 1rem;
+  }
+
+  .lista-livros {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+  }
+
+  .livro-imagem img {
+    height: 180px;
+  }
+
+  /* Ajustes para tabelas em telas pequenas */
+  .tabela-reservas, .tabela-emprestimos {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .btn-reservar, .btn-renovar, .btn-comunicar {
+    padding: 8px;
+    font-size: 0.8rem;
+  }
+
+  /* Transformando as tabelas para visualização em card em telas muito pequenas */
+  @media (max-width: 480px) {
+    .tabela-reservas thead, .tabela-emprestimos thead {
+      display: none;
+    }
+
+    .tabela-reservas tbody, .tabela-emprestimos tbody {
+      display: block;
+    }
+
+    .tabela-reservas tr, .tabela-emprestimos tr {
+      display: block;
+      margin-bottom: 15px;
+      border: 1px solid var(--cor-cinza);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .tabela-reservas td, .tabela-emprestimos td {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 10px;
+      border: none;
+      border-bottom: 1px solid var(--cor-cinza);
+      text-align: right;
+      white-space: normal;
+    }
+
+    .tabela-reservas td:before, .tabela-emprestimos td:before {
+      content: attr(data-label);
+      float: left;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .status {
+      margin: 0 0 0 auto;
+    }
+  }
+}
   </style>

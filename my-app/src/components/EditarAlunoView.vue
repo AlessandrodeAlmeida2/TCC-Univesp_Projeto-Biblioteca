@@ -361,6 +361,8 @@ export default {
   @media (max-width: 768px) {
     .columns-container {
       grid-template-columns: 1fr;
+      display: flex;
+      flex-direction: column-reverse;
     }
     
     .right-column {
@@ -375,6 +377,11 @@ export default {
     .form-group label {
       text-align: left;
     }
+
+    .form-row.periodo-container {
+    flex-direction: column;
+    gap: 10px;
+  }
   }
   </style>
   

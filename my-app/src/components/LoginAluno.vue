@@ -38,7 +38,7 @@ export default {
 
       if (data) {
         localStorage.setItem('aluno', JSON.stringify(data))
-        this.$router.push(`/aluno/${data.ra}`)
+        this.$router.push(`aluno/${data.ra}`)
       } else {
         alert('RA ou Email inválido')
       }
