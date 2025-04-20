@@ -9,7 +9,7 @@
             </div>
             <div class="card-info">
               <h3>Livros Cadastrados</h3>
-              <p class="numero">1.250</p>
+              <p class="numero">{{ totalLivros }}</p>
             </div>
           </div>
           
@@ -19,31 +19,22 @@
             </div>
             <div class="card-info">
               <h3>Alunos cadastrados</h3>
-              <p class="numero">520</p>
+              <p class="numero">{{ totalAlunos }}</p>
             </div>
 
           </div>
           
           <div class="card">
-            <div class="card-icon">
-              <img src="../assets/img/open_book.png" alt="livros" class="icon_principal">
-            </div>
-            <div class="card-info">
-              <h3>Empréstimos realizados</h3>
-              <p class="numero">42</p>
-            </div>
+            <a href="/reservas">
+              <div class="card-icon">
+                <img src="../assets/img/open_book.png" alt="livros" class="icon_principal">
+              </div>
+              <div class="card-info">
+                <h3>Reservas pendentes</h3>
+                <p class="numero">{{ totalReservas }}</p>
+              </div>
+            </a>
           </div>
-          
-          <!-- <div class="card">
-            <div class="card-icon">
-              <i class="fas fa-exclamation-triangle"></i>
-            </div>
-            <div class="card-info">
-              <h3>Atrasos</h3>
-              <p class="numero">15</p>
-              <p>Livros atrasados</p>
-            </div>
-          </div> -->
         </div>
       </section>
 
@@ -106,11 +97,45 @@
 </template>
 
 <script>
+import { getLivros } from '../services/livrosService.js';
+import { getAlunos } from '../services/alunosService.js';
+import { getReservas } from '../services/reservasService.js';
+
 export default {
   name: 'BibliotecaHome',
   data() {
     return {
-      // Aqui você pode adicionar os dados dinâmicos que seriam carregados do backend
+      totalLivros: 0,
+      totalAlunos: 0,
+      totalReservas: 0,
+      carregando: false,
+      erro: null,
+    }
+  },
+  async mounted() {
+    this.carregando = true;
+    try {
+      // Livros
+      const { data: livros, error: erroLivros } = await getLivros();
+      if (erroLivros) throw erroLivros;
+      this.totalLivros = Array.isArray(livros) ? livros.length : 0;
+
+      // Alunos
+      const { data: alunos, error: erroAlunos } = await getAlunos();
+      if (erroAlunos) throw erroAlunos;
+      this.totalAlunos = Array.isArray(alunos) ? alunos.length : 0;
+
+      // Reservas
+      const { data: reservas, error: erroReservas } = await getReservas();
+      if (erroReservas) throw erroReservas;
+      // Considera apenas reservas com status 'Pendente' (case-insensitive)
+      this.totalReservas = Array.isArray(reservas)
+        ? reservas.filter(r => String(r.status).toLowerCase() === 'pendente').length
+        : 0;
+    } catch (e) {
+      this.erro = 'Erro ao carregar totais do dashboard.';
+    } finally {
+      this.carregando = false;
     }
   },
   methods: {

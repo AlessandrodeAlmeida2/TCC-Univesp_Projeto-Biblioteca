@@ -4,7 +4,6 @@
     <table>
       <thead>
         <tr>
-          <th>Código</th>
           <th>Título</th>
           <th>Autor</th>
           <th>Categoria</th>
@@ -14,7 +13,6 @@
       </thead>
       <tbody>
         <tr v-for="livro in livros" :key="livro.id">
-          <td>{{ livro.codigo }}</td>
           <td>{{ livro.titulo }}</td>
           <td>{{ livro.autor }}</td>
           <td>{{ livro.categoria }}</td>

@@ -83,7 +83,7 @@ export default {
 
 <style>
 @import './assets/base.css';
-@import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
+
 .header {
   display: flex;
   align-items: center;

@@ -1,7 +1,17 @@
 <template>
   <section class="consulta-livros">
       <h2>Consulta de Livros</h2>
-      
+      <div class="search-container">
+        <input 
+          type="text" 
+          placeholder="Buscar livro..." 
+          v-model="searchQuery" 
+          class="search-input"
+        >
+        <button class="search-button">
+          <i class="fa-solid fa-search"></i>
+        </button>
+      </div>
       <!-- Versão Desktop -->
       <div class="tabela-desktop">
           <table>
@@ -16,7 +26,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="livro in livros" :key="livro.codigo">
+              <tr v-for="livro in filteredLivros" :key="livro.codigo">
                 <td>{{ livro.codigo }}</td>
                 <td>{{ livro.titulo }}</td>
                 <td>{{ livro.autor }}</td>
@@ -25,7 +35,7 @@
                   <span 
                     class="status" 
                     :class="{
-                      'disponivel': livro.status === 'Disponível',
+                      'disponivel': livro.status === 'Disponivel',
                       'emprestado': livro.status === 'Emprestado',
                       'reservado': livro.status === 'Reservado'
                     }"
@@ -35,10 +45,10 @@
                 </td>
                 <td>
                   <button class="btn-table" @click="visualizarLivro(livro)">
-                    <i class="fas fa-eye"></i>
+                    <i class="fa-solid fa-eye"></i>
                   </button>
                   <button class="btn-table" @click="editarLivro(livro)">
-                    <i class="fas fa-edit"></i>
+                    <i class="fa-solid fa-edit"></i>
                   </button>
                   <button class="btn-table" @click="excluirLivro(livro)">
                     <i class="fas fa-trash-alt"></i>
@@ -51,13 +61,13 @@
 
       <!-- Versão Mobile -->
       <div class="tabela-mobile">
-          <div v-for="livro in livros" :key="livro.codigo" class="card-livro">
+          <div v-for="livro in filteredLivros" :key="livro.codigo" class="card-livro">
               <div class="card-header">
                   <span class="titulo">{{ livro.titulo }}</span>
                   <span 
                     class="status" 
                     :class="{
-                      'disponivel': livro.status === 'Disponível',
+                      'disponivel': livro.status === 'Disponivel',
                       'emprestado': livro.status === 'Emprestado',
                       'reservado': livro.status === 'Reservado'
                     }"
@@ -101,10 +111,21 @@ export default {
   name: 'ConsultaLivro',
   data() {
     return {
+      searchQuery: '',
       livros: [],
       carregando: false,
       erro: ''
     };
+  },
+  computed: {
+    filteredLivros() {
+      if (!this.searchQuery) return this.livros;
+      const query = this.searchQuery.toLowerCase();
+      return this.livros.filter(livro =>
+        livro.titulo.toLowerCase().includes(query) ||
+        (livro.autor && livro.autor.includes(this.searchQuery))
+      );
+    }
   },
   async mounted() {
     this.carregando = true;
@@ -141,6 +162,28 @@ export default {
 <style scoped>
 .consulta-livros {
 margin-bottom: 30px;
+}
+
+.search-container {
+  display: flex;
+  margin-bottom: 20px;
+  max-width: 400px;
+}
+
+.search-input {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px 0 0 4px;
+}
+
+.search-button {
+  padding: 10px 15px;
+  background-color: #0077b5;
+  color: white;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
 }
 
 /* Estilos da Tabela Desktop */

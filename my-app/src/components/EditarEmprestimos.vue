@@ -4,7 +4,6 @@
     <table class="tabela-emprestimos">
       <thead>
         <tr>
-          <th>ID</th>
           <th>Aluno</th>
           <th>Livro</th>
           <th>Retirada</th>
@@ -15,7 +14,6 @@
       </thead>
       <tbody>
         <tr v-for="emprestimo in emprestimos" :key="emprestimo.id">
-          <td>{{ emprestimo.id }}</td>
           <td>{{ emprestimo.aluno_nome }}</td>
           <td>{{ emprestimo.livro_titulo }}</td>
           <td>{{ emprestimo.data_retirada }}</td>
@@ -77,7 +75,11 @@ export default {
           .from('emprestimos')
           .delete()
           .eq('id', id);
-        if (error) {
+        const { error: errorLivro } = await supabase
+          .from('livros')
+          .update({ status: 'Disponivel' })
+          .eq('id', id);
+        if (error || errorLivro) {
           alert('Erro ao deletar!');
         } else {
           this.emprestimos = this.emprestimos.filter(e => e.id !== id);

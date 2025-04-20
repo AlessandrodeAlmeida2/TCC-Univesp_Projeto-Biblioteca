@@ -135,7 +135,7 @@ export default {
     async alterarStatusLivro() {
       const { error } = await supabase
         .from('livros')
-        .update({ status: 'indisponivel' })
+        .update({ status: 'Emprestado' })
         .eq('id', this.emprestimoEditado.livro_id);
       if (error) {
         alert('Erro ao alterar status do livro!');

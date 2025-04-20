@@ -59,7 +59,7 @@
             v-model="livroEditado.status"
             required
           >
-            <option value="Disponível">Disponível</option>
+            <option value="Disponivel">Disponível</option>
             <option value="Emprestado">Emprestado</option>
             <option value="Reservado">Reservado</option>
           </select>
@@ -102,8 +102,8 @@
         this.mensagem = '';
         this.erro = '';
         // Converter status para o padrão do banco
-        let statusDb = this.livroEditado.status.toLowerCase();
-        if (statusDb === 'disponível') statusDb = 'disponivel';
+        let statusDb = this.livroEditado.status;
+        if (statusDb === 'Disponivel') statusDb = 'Disponivel';
         // Montar objeto para atualização
         const updates = {
           titulo: this.livroEditado.titulo,
