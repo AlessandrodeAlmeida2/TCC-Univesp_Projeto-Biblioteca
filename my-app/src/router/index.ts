@@ -90,6 +90,11 @@ const router = createRouter({
       component: () => import('../components/LoginAluno.vue')
     },
     {
+      path: '/reservas',
+      name: 'reservas',
+      component: () => import('../components/Reservas.vue')
+    },
+    {
       path: '/login',
       name: 'login',
       // route level code-splitting

@@ -243,7 +243,7 @@
             autor: livro.autor,
             categoria: livro.categoria,
             status: livro.status,
-            disponivel: livro.status === 'disponivel',
+            disponivel: livro.status === 'Disponivel',
             imagem: '/api/placeholder/200/300'
           }));
         }
@@ -311,7 +311,12 @@
             status: 'Pendente',
             codigo_verificacao: codigoVerificacao
           });
-        if (!error) {
+        const { error: errorLivro} = await supabase
+          .from('livros')
+          .update({ status: 'Reservado'})
+          .eq('id', livro.id)
+          ;
+        if (!error && !errorLivro) {
           alert(`Reserva do livro "${livro.titulo}" realizada com sucesso! Código: ${codigoVerificacao}`);
           await this.buscarLivros();
           await this.buscarReservas();

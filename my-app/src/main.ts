@@ -4,6 +4,8 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import FooterView from '@/components/FooterView.vue'
 
+import '@fortawesome/fontawesome-free/css/all.css'
+
 // Vuetify
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
