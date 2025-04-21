@@ -8,7 +8,7 @@
         <input type="text" id="ra" v-model="ra" placeholder="Digite o RA, somente números" required />
       </div>
 
-      <button type="submit">Entrar</button>
+      <button class="submit-button" type="submit">Entrar</button>
     </form>
   </div>
 </template>
@@ -74,6 +74,28 @@ h2 {
   flex-direction: column;
 }
 
+.submit-button {
+    padding: 12px;
+    margin-top: 10px;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .submit-button:hover {
+    background-color: #3a7bc8;
+  }
+  
+  .submit-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+
 label {
   margin-bottom: 5px;
   font-weight: 600;
@@ -91,6 +113,12 @@ input:focus {
   outline: none;
   border-color: #4a90e2;
   box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+@media (max-width: 768px) {
+  .submit-button {
+    width: 100%;
+  }
 }
 
 </style>
