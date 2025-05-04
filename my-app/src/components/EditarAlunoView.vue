@@ -16,6 +16,28 @@
                 placeholder="Digite o RA"
               >
             </div>
+
+            <div class="form-group">
+              <label for="rg">RG</label>
+              <input 
+                type="text" 
+                id="rg" 
+                v-model="aluno.rg" 
+                required 
+                placeholder="Digite o RG"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="cpf">CPF</label>
+              <input 
+                type="text" 
+                id="cpf" 
+                v-model="aluno.cpf" 
+                required 
+                placeholder="Digite o CPF"
+              >
+            </div>
   
             <div class="form-group">
               <label for="nome">Nome Completo</label>
@@ -37,13 +59,44 @@
                 placeholder="Digite o endereço completo"
               >
             </div>
+
+            <div class="form-group">
+              <label for="bairro">Bairro</label>
+              <input 
+                type="text" 
+                id="bairro" 
+                v-model="aluno.bairro" 
+                placeholder="Digite o bairro"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="cidade">Cidade</label>
+              <input 
+                type="text" 
+                id="cidade" 
+                v-model="aluno.cidade" 
+                required 
+                placeholder="Digite a cidade"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="cep">CEP</label>
+              <input 
+                type="text" 
+                id="cep" 
+                v-model="aluno.cep" 
+                placeholder="Digite o CEP"
+              >
+            </div>
   
             <div class="form-group">
               <label for="dataNascimento">Data de Nascimento</label>
               <input 
                 type="date" 
                 id="dataNascimento" 
-                v-model="aluno.dataNascimento" 
+                v-model="aluno.data_nascimento" 
                 required
               >
             </div>
@@ -54,6 +107,16 @@
                 type="tel" 
                 id="telefone" 
                 v-model="aluno.telefone" 
+                placeholder="(XX) XXXXX-XXXX"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="tel_recado">Telefone de Recado</label>
+              <input 
+                type="tel" 
+                id="tel_recado" 
+                v-model="aluno.tel_recado" 
                 placeholder="(XX) XXXXX-XXXX"
               >
             </div>
@@ -68,6 +131,18 @@
                 placeholder="Digite o e-mail"
               >
             </div>
+
+            <div class="form-group">
+              <label for="senha">Senha</label>
+              <input 
+                type="password" 
+                id="senha" 
+                v-model="aluno.senha" 
+                required 
+                placeholder="Digite a senha"
+              >
+            </div>
+
           </div>
   
           <!-- Coluna da direita (Foto) -->
@@ -83,6 +158,7 @@
                 <input 
                   type="file" 
                   id="carregarFoto" 
+                  ref="carregarFoto"
                   @change="handleFileUpload" 
                   accept="image/*"
                   hidden
@@ -120,6 +196,46 @@
                 <option value="Sala 101">Sala 101</option>
                 <option value="Sala 202">Sala 202</option>
                 <option value="Sala 303">Sala 303</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="educacao">Nível de Ensino</label>
+              <select 
+                id="educacao" 
+                v-model="aluno.educacao" 
+                required
+              >
+                <option value="">Selecione o nível de ensino</option>
+                <option value="Fundamental">Fundamental</option>
+                <option value="Médio">Médio</option>
+                <option value="Superior">Superior</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="serie">Série</label>
+              <select 
+                id="serie" 
+                v-model="aluno.serie" 
+                required
+              >
+                <option value="">Selecione a série</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
               </select>
             </div>
           </div>
@@ -178,6 +294,7 @@
   
 <script>
 import alunoService from '../services/alunoService';
+import { supabase } from '../supabase';
 
 export default {
   name: 'EditarAluno',
@@ -200,29 +317,64 @@ export default {
     } catch (e) {
       console.error('Erro ao buscar aluno:', e);
       alert('Erro ao buscar aluno');
-      this.$router.push('/alunos');
+      this.$router.push('/editar-alunos');
     }
   },
   methods: {
     async atualizarAluno() {
       try {
-        await alunoService.atualizarAluno(this.aluno.ra, this.aluno);
+        // Se houver uma foto nova selecionada, faz upload para o Supabase Storage
+        let url_foto = this.aluno.url_foto;
+        if (this.aluno.foto) {
+          const fileExt = this.aluno.foto.name.split('.').pop();
+          const fileName = `${this.aluno.ra}_${Date.now()}.${fileExt}`;
+          const { data: uploadData, error: uploadError } = await supabase.storage.from('fotos').upload(fileName, this.aluno.foto, { upsert: true });
+          if (uploadError) {
+            alert('Erro ao enviar a foto: ' + uploadError.message);
+            return;
+          }
+          // Recupera a URL pública
+          const { data: publicUrlData } = supabase.storage.from('fotos').getPublicUrl(fileName);
+          url_foto = publicUrlData.publicUrl;
+          this.aluno.url_foto = url_foto;
+        }
+        // Cria uma cópia do aluno sem o campo 'foto', pois não existe na tabela
+        const alunoParaAtualizar = { ...this.aluno };
+        delete alunoParaAtualizar.foto;
+        await alunoService.atualizarAluno(this.aluno.ra, alunoParaAtualizar);
         alert('Aluno atualizado com sucesso!');
-        this.$router.push('/alunos');
+        this.$router.push('/editar-alunos');
       } catch (e) {
-        alert('Erro ao atualizar aluno');
+        alert('Erro ao atualizar aluno: ' + (e.message || e));
+        console.error('Erro ao atualizar aluno:', e);
+      }
+    },
+    handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.aluno.foto = file;
+        this.urlImagem = URL.createObjectURL(file);
       }
     },
     limparFormulario() {
       this.aluno = {
         ra: '',
+        rg: '',
+        cpf: '',
         nome: '',
         email: '',
         telefone: '',
-        dataNascimento: '',
+        tel_contato: '',
+        data_nascimento: '',
         sala: '',
         periodo: '',
         endereco: '',
+        bairro: '',
+        cidade: '',
+        cep: '',
+        educacao: '',
+        serie: '',
+        senha: '',
         url_foto: null
       };
       this.urlImagem = null;
@@ -312,6 +464,11 @@ export default {
     display: flex;
     gap: 10px;
     flex-direction: column;
+  }
+
+  .form-row {
+    max-width: 500px;
+    margin: 8px 0px;
   }
   
   .btn-foto {
