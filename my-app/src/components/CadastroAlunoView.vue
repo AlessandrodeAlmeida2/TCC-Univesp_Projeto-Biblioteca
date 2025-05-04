@@ -19,6 +19,28 @@
           </div>
 
           <div class="form-group">
+            <label for="rg">RG</label>
+            <input 
+              type="text" 
+              id="rg" 
+              v-model="aluno.rg" 
+              required 
+              placeholder="Digite o RG"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="cpf">CPF</label>
+            <input 
+              type="text" 
+              id="cpf" 
+              v-model="aluno.cpf" 
+              required 
+              placeholder="Digite o CPF"
+            >
+          </div>
+
+          <div class="form-group">
             <label for="nome">Nome Completo</label>
             <input 
               type="text" 
@@ -35,7 +57,38 @@
               type="text" 
               id="endereco" 
               v-model="aluno.endereco" 
-              placeholder="Digite o endereço completo"
+              placeholder="Digite a rua e o número"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="bairro">Bairro</label>
+            <input 
+              type="text" 
+              id="bairro" 
+              v-model="aluno.bairro" 
+              placeholder="Digite o bairro"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="cidade">Cidade</label>
+            <input 
+              type="text" 
+              id="cidade" 
+              v-model="aluno.cidade" 
+              required 
+              placeholder="Digite a cidade"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="cep">CEP</label>
+            <input 
+              type="text" 
+              id="cep" 
+              v-model="aluno.cep" 
+              placeholder="Digite o CEP"
             >
           </div>
 
@@ -60,6 +113,16 @@
           </div>
 
           <div class="form-group">
+            <label for="tel_recado">Telefone de Recado</label>
+            <input 
+              type="tel" 
+              id="tel_recado" 
+              v-model="aluno.tel_recado" 
+              placeholder="(XX) XXXXX-XXXX"
+            >
+          </div>
+
+          <div class="form-group">
             <label for="email">E-mail</label>
             <input 
               type="email" 
@@ -69,6 +132,18 @@
               placeholder="Digite o e-mail"
             >
           </div>
+
+          <div class="form-group">
+            <label for="senha">Senha</label>
+            <input 
+              type="password" 
+              id="senha" 
+              v-model="aluno.senha" 
+              required 
+              placeholder="Digite a senha"
+            >
+          </div>
+
         </div>
 
         <!-- Coluna da direita (Foto) -->
@@ -121,6 +196,46 @@
               <option value="Sala 101">Sala 101</option>
               <option value="Sala 202">Sala 202</option>
               <option value="Sala 303">Sala 303</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="educacao">Nível de Ensino</label>
+            <select 
+              id="educacao" 
+              v-model="aluno.educacao" 
+              required
+            >
+              <option value="">Selecione o nível de ensino</option>
+              <option value="Fundamental">Fundamental</option>
+              <option value="Médio">Médio</option>
+              <option value="Superior">Superior</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="serie">Série</label>
+            <select 
+              id="serie" 
+              v-model="aluno.serie" 
+              required
+            >
+              <option value="">Selecione a série</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
             </select>
           </div>
         </div>
@@ -183,12 +298,21 @@ export default {
     return {
       aluno: {
         ra: '',
+        rg: '',
+        cpf: '',
         nome: '',
         email: '',
         telefone: '',
+        tel_recado: '',
         dataNascimento: '',
         endereco: '',
+        bairro: '',
+        cidade: '',
+        cep: '',
+        educacao: '',
+        serie: '',
         sala: '',
+        senha: '',
         periodo: '',
         foto: null
       },
@@ -218,12 +342,21 @@ export default {
       // Monta objeto para o banco
       const alunoDb = {
         ra: this.aluno.ra,
+        rg: this.aluno.rg,
+        cpf: this.aluno.cpf,
         nome: this.aluno.nome,
         email: this.aluno.email,
         telefone: this.aluno.telefone,
+        tel_recado: this.aluno.tel_recado,
         data_nascimento: this.aluno.dataNascimento,
         endereco: this.aluno.endereco,
+        bairro: this.aluno.bairro,
+        cidade: this.aluno.cidade,
+        cep: this.aluno.cep,
+        educacao: this.aluno.educacao,
+        serie: this.aluno.serie,
         sala: this.aluno.sala,
+        senha: this.aluno.senha,
         periodo: this.aluno.periodo,
         url_foto: url_foto
       };
@@ -245,12 +378,21 @@ export default {
     limparFormulario() {
       this.aluno = {
         ra: '',
+        rg: '',
+        cpf: '',
         nome: '',
         email: '',
         telefone: '',
+        tel_contato: '',
         dataNascimento: '',
         endereco: '',
+        bairro: '',
+        cidade: '',
+        cep: '',
+        educacao: '',
+        serie: '',
         sala: '',
+        senha: '',
         periodo: '',
         foto: null
       };
@@ -345,6 +487,11 @@ export default {
   display: flex;
   gap: 10px;
   flex-direction: column;
+}
+
+.form-row {
+  max-width: 500px;
+  margin: 8px 0px;
 }
 
 .btn-foto {
