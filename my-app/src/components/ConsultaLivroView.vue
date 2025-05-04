@@ -35,9 +35,9 @@
                   <span 
                     class="status" 
                     :class="{
-                      'disponivel': livro.status === 'Disponivel',
-                      'emprestado': livro.status === 'Emprestado',
-                      'reservado': livro.status === 'Reservado'
+                      'disponivel': livro.status === 'Disponivel' || livro.status === 'disponivel',
+                      'emprestado': livro.status === 'Emprestado' || livro.status === 'emprestado',
+                      'reservado': livro.status === 'Reservado' || livro.status === 'reservado'
                     }"
                   >
                     {{ livro.status }}
@@ -67,9 +67,9 @@
                   <span 
                     class="status" 
                     :class="{
-                      'disponivel': livro.status === 'Disponivel',
-                      'emprestado': livro.status === 'Emprestado',
-                      'reservado': livro.status === 'Reservado'
+                      'disponivel': livro.status === 'Disponivel' || livro.status === 'disponivel',
+                      'emprestado': livro.status === 'Emprestado' || livro.status === 'emprestado',
+                      'reservado': livro.status === 'Reservado' || livro.status === 'reservado'
                     }"
                   >
                     {{ livro.status }}
