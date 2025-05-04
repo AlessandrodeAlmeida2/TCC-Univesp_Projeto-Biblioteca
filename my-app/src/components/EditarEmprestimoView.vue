@@ -134,7 +134,7 @@ export default {
     async buscarLivros() {
       const { data, error } = await supabase
         .from('livros')
-        .select('id, titulo');
+        .select('id, titulo, status');
       if (!error) this.livros = data;
     },
     async atualizarEmprestimo() {
@@ -146,9 +146,22 @@ export default {
       if (error) {
         alert('Erro ao atualizar empréstimo!');
       } else {
+        await this.alterarStatusLivro();
         alert('Empréstimo atualizado com sucesso!');
         this.$router.push('/editar-emprestimos');
       }
+    },
+    async alterarStatusLivro() {
+      if (this.emprestimoEditado.status === 'Devolvido') {
+        const { error } = await supabase
+          .from('livros')
+          .update({ status: 'Disponivel' })
+          .eq('id', this.emprestimoEditado.livro_id);
+        if (error) {
+          alert('Erro ao alterar status do livro!');
+        }
+      }
+      
     },
     cancelarEdicao() {
       this.$router.push('/editar-emprestimos');

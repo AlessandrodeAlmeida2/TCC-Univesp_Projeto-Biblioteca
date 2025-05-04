@@ -4,13 +4,23 @@
       
       <form @submit.prevent="salvarLivro" class="formulario-livro">
         <div class="form-grupo">
-          <label for="codigo">Código do Livro</label>
+          <label for="codigo">ISBN</label>
           <input 
             type="text" 
             id="codigo" 
             v-model="novoLivro.codigo" 
-            placeholder="Digite o código"
+            placeholder="Digite o ISBN"
             required
+          >
+        </div>
+
+        <div class="form-grupo">
+          <label for="num_cham">Número de Chamada</label>
+          <input 
+            type="text" 
+            id="num_cham" 
+            v-model="novoLivro.num_cham" 
+            placeholder="Digite o número de chamada"
           >
         </div>
   
@@ -52,6 +62,69 @@
             <option value="História">História</option>
           </select>
         </div>
+
+        <div class="form-grupo">
+          <label for="editora">Editora</label>
+          <input 
+            type="text" 
+            id="editora" 
+            v-model="novoLivro.editora" 
+            placeholder="Digite o nome da editora"
+            required
+          >
+        </div>
+
+        <div class="form-grupo">
+          <label for="edicao">Edição</label>
+          <input 
+            type="text" 
+            id="edicao" 
+            v-model="novoLivro.edicao" 
+            placeholder="Digite a edição"
+            required
+          >
+        </div>
+
+        <div class="form-grupo">
+          <label for="num_pag">Número de Páginas</label>
+          <input 
+            type="number" 
+            id="num_pag" 
+            v-model="novoLivro.num_pag" 
+            placeholder="Digite o número de páginas"
+            required
+          >
+        </div>
+
+        <div class="form-grupo">
+          <label for="data_pub">Data de Publicação</label>
+          <input 
+            type="date" 
+            id="data_pub" 
+            v-model="novoLivro.data_pub" 
+            required
+          >
+        </div>
+
+        <div class="form-grupo">
+          <label for="data_aq">Data de Aquisição</label>
+          <input 
+            type="date" 
+            id="data_aq" 
+            v-model="novoLivro.data_aq" 
+            required
+          >
+        </div>
+
+        <div class="form-grupo">
+          <label for="observacoes">Observações</label>
+          <textarea 
+            id="observacoes" 
+            v-model="novoLivro.observacoes"
+            placeholder="Observações (opcional)"
+            rows="2"
+          ></textarea>
+        </div>
   
         <div class="form-grupo">
           <label for="status">Status</label>
@@ -89,8 +162,15 @@ export default {
       novoLivro: {
         codigo: '',
         titulo: '',
+        num_cham: '',
         autor: '',
         categoria: '',
+        editora: '',
+        edicao: '',
+        num_pag: '',
+        data_pub: '',
+        data_aq: '',
+        observacoes: '',
         status: 'Disponível'
       },
       mensagem: '',
@@ -102,14 +182,21 @@ export default {
       this.mensagem = '';
       this.erro = '';
       // Converter status para o padrão do banco
-      let statusDb = this.novoLivro.status.toLowerCase();
-      if (statusDb === 'disponível') statusDb = 'disponivel';
+      let statusDb = this.novoLivro.status;
+      if (statusDb === 'Disponível') statusDb = 'Disponivel';
       // Montar objeto conforme tabela
       const livroParaSalvar = {
         codigo: this.novoLivro.codigo,
         titulo: this.novoLivro.titulo,
+        num_cham: this.novoLivro.num_cham,
         autor: this.novoLivro.autor,
         categoria: this.novoLivro.categoria,
+        editora: this.novoLivro.editora,
+        edicao: this.novoLivro.edicao,
+        num_pag: this.novoLivro.num_pag,
+        data_pub: this.novoLivro.data_pub,
+        data_aq: this.novoLivro.data_aq,
+        observacoes: this.novoLivro.observacoes,
         status: statusDb
       };
       try {
@@ -122,18 +209,27 @@ export default {
           this.erro = 'Livro não foi cadastrado. Nenhum dado retornado.';
         } else {
           this.mensagem = 'Livro cadastrado com sucesso!';
+          alert(this.mensagem);
           this.limparFormulario();
         }
       } catch (e) {
         this.erro = 'Erro inesperado ao cadastrar livro.';
+        alert(this.erro);
       }
     },
     limparFormulario() {
       this.novoLivro = {
         codigo: '',
         titulo: '',
+        num_cham: '',
         autor: '',
         categoria: '',
+        editora: '',
+        edicao: '',
+        num_pag: '',
+        data_pub: '',
+        data_aq: '',
+        observacoes: '',
         status: 'Disponível'
       };
     }

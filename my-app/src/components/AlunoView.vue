@@ -172,7 +172,7 @@
         searchQuery: '',
         categoriaFiltro: '',
         filtroStatus: 'Todos',
-        statusEmprestimo: ['Todos', 'Em Andamento', 'Atrasado', 'Concluído'],
+        statusEmprestimo: ['Todos', 'Em Andamento', 'Atrasado', 'Devolvido'],
         livros: [],
         emprestimos: [],
         reservas: [],

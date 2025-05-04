@@ -4,12 +4,12 @@
       
       <form @submit.prevent="atualizarLivro" class="formulario-livro">
         <div class="form-grupo">
-          <label for="codigo">Código do Livro</label>
+          <label for="codigo">ISBN</label>
           <input 
             type="text" 
             id="codigo" 
             v-model="livroEditado.codigo" 
-            placeholder="Código do livro"
+            placeholder="Digite o ISBN do livro"
             readonly
           >
         </div>
@@ -50,6 +50,69 @@
             <option value="Ficção Científica">Ficção Científica</option>
             <option value="História">História</option>
           </select>
+        </div>
+
+        <div class="form-grupo">
+          <label for="editora">Editora</label>
+          <input 
+            type="text" 
+            id="editora" 
+            v-model="livroEditado.editora" 
+            placeholder="Digite o nome da editora"
+            required
+          >
+        </div>
+
+        <div class="form-grupo">
+          <label for="edicao">Edição</label>
+          <input 
+            type="text" 
+            id="edicao" 
+            v-model="livroEditado.edicao" 
+            placeholder="Digite a edição"
+            required
+          >
+        </div>
+
+        <div class="form-grupo">
+          <label for="num_pag">Número de Páginas</label>
+          <input 
+            type="number" 
+            id="num_pag" 
+            v-model="livroEditado.num_pag" 
+            placeholder="Digite o número de páginas"
+            required
+          >
+        </div>
+
+        <div class="form-grupo">
+          <label for="data_pub">Data de Publicação</label>
+          <input 
+            type="date" 
+            id="data_pub" 
+            v-model="livroEditado.data_pub" 
+            required
+          >
+        </div>
+
+        <div class="form-grupo">
+          <label for="data_aq">Data de Aquisição</label>
+          <input 
+            type="date" 
+            id="data_aq" 
+            v-model="livroEditado.data_aq" 
+            required
+          >
+        </div>
+
+        <div class="form-grupo">
+          <label for="observacoes">Observações</label>
+          <textarea 
+            id="observacoes" 
+            v-model="livroEditado.observacoes"
+            placeholder="Observações (opcional)"
+            rows="2"
+          ></textarea>
         </div>
   
         <div class="form-grupo">
@@ -109,6 +172,12 @@
           titulo: this.livroEditado.titulo,
           autor: this.livroEditado.autor,
           categoria: this.livroEditado.categoria,
+          editora: this.livroEditado.editora,
+          edicao: this.livroEditado.edicao,
+          num_pag: this.livroEditado.num_pag,
+          data_pub: this.livroEditado.data_pub,
+          data_aq: this.livroEditado.data_aq,
+          observacoes: this.livroEditado.observacoes,
           status: statusDb
         };
         try {
