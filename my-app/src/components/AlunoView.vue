@@ -566,6 +566,11 @@
     background-color: #FFF8E1;
     color: #FF8F00;
   }
+
+  .pendente {
+    background-color: #FFF8E1;
+    color: #FF8F00;
+  }
   
   .atrasado {
     background-color: #FFEBEE;
@@ -573,6 +578,11 @@
   }
   
   .concluido {
+    background-color: #E8F5E9;
+    color: #388E3C;
+  }
+
+  .devolvido {
     background-color: #E8F5E9;
     color: #388E3C;
   }
