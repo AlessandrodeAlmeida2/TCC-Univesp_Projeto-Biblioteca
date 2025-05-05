@@ -36,7 +36,12 @@
         <ul>
           <li v-for="emp in emprestimosDoAluno(aluno.ra)" :key="emp.id">
             <span :class="{'atrasado': isAtrasado(emp)}">
-              Livro: {{ emp.livro_id || emp.livro || emp.titulo }}<br>
+              <template v-if="getLivroById(emp.livro_id)">
+                Livro: {{ getLivroById(emp.livro_id).titulo }}<br>
+              </template>
+              <template v-else>
+                Livro: Livro não encontrado<br>
+              </template>
               Retirada: {{ emp.data_retirada || emp.dataRetirada }}<br>
               Devolução: {{ emp.data_devolucao || emp.dataDevolucao }}<br>
               Status: <span :class="{'status atrasado': isAtrasado(emp)}">{{ statusEmprestimo(emp) }}</span>
@@ -92,7 +97,7 @@
       <ul>
         <li v-for="emp in emprestimosDoAluno(aluno.ra)" :key="emp.id">
           <span :class="{'atrasado': isAtrasado(emp)}">
-            Livro: {{ emp.livro_id || emp.livro || emp.titulo }}<br>
+            Livro: {{ getLivroById(emp.livro_id).titulo }}<br>
             Retirada: {{ emp.data_retirada || emp.dataRetirada }}<br>
             Devolução: {{ emp.data_devolucao || emp.dataDevolucao }}<br>
             Status: <span :class="{'status atrasado': isAtrasado(emp)}">{{ statusEmprestimo(emp) }}</span>
@@ -126,6 +131,7 @@
 <script>
 import { getEmprestimos } from '../services/emprestimosService.js';
 import alunoService from '../services/alunoService.js';
+import { getLivros } from '../services/livrosService.js';
 
 export default {
   name: 'ConsultaAluno',
@@ -134,6 +140,7 @@ export default {
       alunos: [],
       emprestimos: [],
       carregando: false,
+      livros: [],
       erro: null
     };
   },
@@ -144,6 +151,9 @@ export default {
       const { data, error } = await getEmprestimos();
       if (error) throw error;
       this.emprestimos = data;
+      const { data: livrosData, error: livrosError } = await getLivros();
+      if (livrosError) throw livrosError;
+      this.livros = livrosData;
     } catch (e) {
       this.erro = 'Erro ao carregar dados dos alunos ou empréstimos.';
     } finally {
@@ -161,7 +171,28 @@ export default {
       console.log('Excluindo aluno:', aluno);
     },
     emprestimosDoAluno(ra) {
-      return this.emprestimos.filter(e => e.aluno_ra === ra);
+      const aluno = this.alunos.find(a => a.ra === ra);
+      if (!aluno) return [];
+      const filtrados = this.emprestimos.filter(e => e.aluno_id === aluno.id);
+      return filtrados;
+    },
+    getLivroById(id) {
+      console.log('Buscando livro com ID:', id);
+
+      if (!this.livros || !Array.isArray(this.livros)) {
+        console.warn('Array de livros não está definido ou não é um array');
+        return null;
+      }
+
+      const livro = this.livros.find(l => String(l.id) === String(id));
+
+      if (!livro) {
+        console.warn('Livro não encontrado com ID:', id);
+        return null;
+      }
+
+      console.log('Livro encontrado:', livro);
+      return livro;
     },
     statusEmprestimo(emprestimo) {
       if (!emprestimo) return 'Nenhum';
