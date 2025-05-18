@@ -16,11 +16,9 @@
         <div class="user-dropdown" v-show="isDropdownOpen">
           <nav>
             <ul class="dropdown-menu">
-              <li><a href="#" class="active">Início</a></li>
+              <li><a href="/" class="active">Início</a></li>
               <li><a href="consulta-livro">Livros</a></li>
               <li><a href="consulta-emprestimo">Empréstimos</a></li>
-              <li><a href="consulta-aluno">Alunos</a></li>
-              <li><a href="#">Relatórios</a></li>
               <li><a @click="logout">Sair</a></li>
             </ul>
           </nav>
