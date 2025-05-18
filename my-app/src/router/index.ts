@@ -62,7 +62,8 @@ const router = createRouter({
     {
       path: '/consulta-livro',
       name: 'consulta-livro',
-      component: () => import('../components/ConsultaLivroView.vue')
+      component: () => import('../components/ConsultaLivroView.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/cadastro-emprestimo',
@@ -82,7 +83,8 @@ const router = createRouter({
     {
       path: '/consulta-emprestimo',
       name: 'consulta-emprestimo',
-      component: () => import('../components/ConsultaEmprestimoView.vue')
+      component: () => import('../components/ConsultaEmprestimoView.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/login-aluno',
