@@ -36,18 +36,8 @@
                   </span>
                 </td>
                 <td>
-                  <button class="btn-table" @click="visualizarEmprestimo(emprestimo)">
-                    <i class="fas fa-eye"></i>
-                  </button>
                   <button class="btn-table" @click="editarEmprestimo(emprestimo)">
                     <i class="fas fa-edit"></i>
-                  </button>
-                  <button 
-                    v-if="emprestimo.status !== 'Devolvido'" 
-                    class="btn-table" 
-                    @click="devolverEmprestimo(emprestimo)"
-                  >
-                    <i class="fas fa-undo"></i>
                   </button>
                 </td>
               </tr>
@@ -86,23 +76,12 @@
                   </div>
               </div>
               <div class="card-acoes">
-                  <button class="btn-table" @click="visualizarEmprestimo(emprestimo)">
-                      <i class="fas fa-eye"></i> Visualizar
-                  </button>
                   <button class="btn-table" @click="editarEmprestimo(emprestimo)">
                       <i class="fas fa-edit"></i> Editar
-                  </button>
-                  <button 
-                    v-if="emprestimo.status !== 'Devolvido'" 
-                    class="btn-table btn-devolver" 
-                    @click="devolverEmprestimo(emprestimo)"
-                  >
-                      <i class="fas fa-undo"></i> Devolver
                   </button>
               </div>
           </div>
       </div>
-
       <a href="#" class="ver-todos">Ver todos os empréstimos</a>
   </section>
 </template>
