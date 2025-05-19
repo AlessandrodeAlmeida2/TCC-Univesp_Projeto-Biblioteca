@@ -123,14 +123,25 @@ export default {
       const { id, ...dados } = this.emprestimoEditado;
       const { error } = await supabase
         .from('emprestimos')
-        .insert(dados);
+        .insert(dados)
+        .select();
       if (error) {
         alert('Erro ao cadastrar empréstimo!');
       } else {
         await this.alterarStatusLivro();
         alert('Empréstimo cadastrado com sucesso!');
-        this.$router.push('/cadastro-emprestimo');
+        this.limparFormulario();
       }
+    },
+    limparFormulario() {
+      this.emprestimoEditado = {
+        aluno_id: '',
+        livro_id: '',
+        data_retirada: '',
+        data_devolucao_prevista: '',
+        status: '',
+        observacoes: ''
+      };
     },
     async alterarStatusLivro() {
       const { error } = await supabase

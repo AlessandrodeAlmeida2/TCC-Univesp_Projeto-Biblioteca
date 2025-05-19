@@ -114,12 +114,6 @@
                   <button class="btn-table" @click="visualizarAluno(aluno)">
                       <i class="fas fa-eye"></i> Visualizar
                   </button>
-                  <button class="btn-table" @click="editarAluno(aluno)">
-                      <i class="fas fa-edit"></i> Editar
-                  </button>
-                  <button class="btn-table btn-excluir" @click="excluirAluno(aluno)">
-                      <i class="fas fa-trash-alt"></i> Excluir
-                  </button>
               </div>
           </div>
       </div>
@@ -162,14 +156,9 @@ export default {
   },
   methods: {
     visualizarAluno(aluno) {
-      console.log('Visualizando aluno:', aluno);
+      this.$router.push(`/visualiza-aluno/${aluno.ra}`);
     },
-    editarAluno(aluno) {
-      console.log('Editando aluno:', aluno);
-    },
-    excluirAluno(aluno) {
-      console.log('Excluindo aluno:', aluno);
-    },
+    
     emprestimosDoAluno(ra) {
       const aluno = this.alunos.find(a => a.ra === ra);
       if (!aluno) return [];

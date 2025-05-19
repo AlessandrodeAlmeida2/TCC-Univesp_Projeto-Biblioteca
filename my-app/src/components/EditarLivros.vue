@@ -1,6 +1,17 @@
 <template>
   <section class="lista-livros">
     <h2>Livros Cadastrados</h2>
+    <div class="search-container">
+      <input 
+        type="text" 
+        placeholder="Buscar livro..." 
+        v-model="searchQuery" 
+        class="search-input"
+      >
+      <!-- <button class="search-button">
+        <i class="fas fa-search"></i>
+      </button> -->
+    </div>
     <table>
       <thead>
         <tr>
@@ -12,7 +23,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="livro in livros" :key="livro.id">
+        <tr v-for="livro in livrosFiltrados" :key="livro.id">
           <td>{{ livro.titulo }}</td>
           <td>{{ livro.autor }}</td>
           <td>{{ livro.categoria }}</td>
@@ -58,6 +69,7 @@ export default {
   components: { EditarLivroView },
   data() {
     return {
+      searchQuery: '',
       livros: [],
       livroSelecionado: null,
       erro: '',
@@ -66,6 +78,15 @@ export default {
   },
   async mounted() {
     await this.carregarLivros();
+  },
+  computed: {
+    livrosFiltrados() {
+      return this.livros.filter(livro =>
+        livro.titulo.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        livro.autor.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        livro.categoria.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    }
   },
   methods: {
     async carregarLivros() {
@@ -109,6 +130,19 @@ export default {
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
+
+.search-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.search-input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 300px;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;

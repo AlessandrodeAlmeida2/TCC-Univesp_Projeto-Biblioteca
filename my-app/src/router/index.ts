@@ -114,6 +114,17 @@ const router = createRouter({
       name: 'footer',
       component: FooterView
     },
+    {
+      path: '/visualiza-aluno/:ra',
+      name: 'visualiza-aluno',
+      component: () => import('../components/VisualizaAluno.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/livros/:id',
+      name: 'visualizar-livro',
+      component: () => import('@/components/VisualizarLivro.vue')
+    }
   ]
 })
 

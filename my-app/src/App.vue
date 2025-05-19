@@ -7,12 +7,23 @@
       </div>
       
       <div class="user-info" ref="userDropdown">
-        <img 
-          src="" 
-          alt="Foto do usuário" 
-          class="user-avatar" 
+        <svg
           @click="toggleDropdown"
-        />
+          xmlns="http://www.w3.org/2000/svg"
+          class="hamburger-icon"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          width="24"
+          height="24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+        </svg>
         <div class="user-dropdown" v-show="isDropdownOpen">
           <nav>
             <ul class="dropdown-menu">
@@ -166,6 +177,11 @@ export default {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.hamburger-icon {
+  cursor: pointer;
+  color: #fff;
 }
 
 .user-avatar {

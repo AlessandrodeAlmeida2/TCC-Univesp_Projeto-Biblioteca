@@ -1,7 +1,7 @@
 import { supabase } from '../supabase'
 
 export async function createLivro(livro) {
-  const { data, error } = await supabase.from('livros').insert([livro])
+  const { data, error } = await supabase.from('livros').insert([livro]).select();
   return { data, error }
 }
 

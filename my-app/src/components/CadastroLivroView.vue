@@ -205,16 +205,17 @@ export default {
         console.log('Resposta do Supabase:', { data, error });
         if (error) {
           this.erro = 'Erro ao cadastrar livro: ' + (error.message || JSON.stringify(error));
+          alert(this.erro);
         } else if (!data || (Array.isArray(data) && data.length === 0)) {
           this.erro = 'Livro não foi cadastrado. Nenhum dado retornado.';
+          alert(this.erro);
         } else {
-          this.mensagem = 'Livro cadastrado com sucesso!';
-          alert(this.mensagem);
+          alert('Livro cadastrado com sucesso!');
           this.limparFormulario();
         }
       } catch (e) {
         this.erro = 'Erro inesperado ao cadastrar livro.';
-        alert(this.erro);
+        alert('Erro inesperado ao cadastrar livro: ' + (e.message || e));
       }
     },
     limparFormulario() {

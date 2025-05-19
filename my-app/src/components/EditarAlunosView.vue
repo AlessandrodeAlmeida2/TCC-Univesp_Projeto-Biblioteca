@@ -75,6 +75,7 @@
 
 <script>
 import alunoService from '../services/alunoService';
+import { deleteAluno } from '../services/alunosService';
 
 export default {
   name: 'EditarAlunos',
@@ -100,6 +101,19 @@ export default {
     editarAluno(aluno) {
       this.$router.push(`/editar-aluno/${aluno.ra}`);
     },
+    async excluirAluno(aluno) {
+      const confirmar = confirm(`Tem certeza que deseja excluir o aluno "${aluno.nome}"?`);
+      if (!confirmar) return;
+
+      try {
+        await deleteAluno(aluno.id);
+        this.alunos = this.alunos.filter(a => a.id !== aluno.id);
+        alert('Aluno excluído com sucesso.');
+      } catch (e) {
+        this.erro = 'Erro ao excluir aluno.';
+      }
+    },
+
     async carregarAlunos() {
       this.carregando = true;
       try {

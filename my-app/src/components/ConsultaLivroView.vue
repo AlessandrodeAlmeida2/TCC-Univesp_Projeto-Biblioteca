@@ -47,12 +47,6 @@
                   <button class="btn-table" @click="visualizarLivro(livro)">
                     <i class="fa-solid fa-eye"></i>
                   </button>
-                  <button class="btn-table" @click="editarLivro(livro)">
-                    <i class="fa-solid fa-edit"></i>
-                  </button>
-                  <button class="btn-table" @click="excluirLivro(livro)">
-                    <i class="fas fa-trash-alt"></i>
-                  </button>
                 </td>
               </tr>
             </tbody>
@@ -90,12 +84,6 @@
                   <button class="btn-table" @click="visualizarLivro(livro)">
                       <i class="fas fa-eye"></i> Visualizar
                   </button>
-                  <button class="btn-table" @click="editarLivro(livro)">
-                      <i class="fas fa-edit"></i> Editar
-                  </button>
-                  <button class="btn-table btn-excluir" @click="excluirLivro(livro)">
-                      <i class="fas fa-trash-alt"></i> Excluir
-                  </button>
               </div>
           </div>
       </div>
@@ -105,7 +93,7 @@
 </template>
 
 <script>
-import { getLivros } from '../services/livrosService.js';
+import { getLivros, getLivroById } from '../services/livrosService.js';
 
 export default {
   name: 'ConsultaLivro',
@@ -113,6 +101,7 @@ export default {
     return {
       searchQuery: '',
       livros: [],
+      livro: null,
       carregando: false,
       erro: ''
     };
@@ -143,18 +132,9 @@ export default {
     }
   },
   methods: {
-    visualizarLivro(livro) {
-      // Lógica para visualizar detalhes do livro
-      console.log('Visualizando livro:', livro);
+    async visualizarLivro(livro) {
+      this.$router.push({ name: 'visualizar-livro', params: { id: livro.id }});
     },
-    editarLivro(livro) {
-      // Lógica para editar livro
-      this.$router.push({ name: 'editar-livro', params: { id: livro.id }});
-    },
-    excluirLivro(livro) {
-      // Lógica para excluir livro
-      console.log('Excluindo livro:', livro);
-    }
   }
 }
 </script>
