@@ -56,6 +56,7 @@
             <option value="">Selecione uma categoria</option>
             <option value="Literatura Brasileira">Literatura Brasileira</option>
             <option value="Literatura Infantil">Literatura Infantil</option>
+            <option value="Literatura Estrangeira">Literatura Estrangeira</option>
             <option value="Fantasia">Fantasia</option>
             <option value="Romance">Romance</option>
             <option value="Ficção Científica">Ficção Científica</option>

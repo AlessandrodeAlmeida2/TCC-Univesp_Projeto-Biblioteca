@@ -1,5 +1,6 @@
 <template>
-    <section class="edicao-livros">
+  <div class="modal-backdrop">
+    <section class="edicao-livros modal-content">
       <h2>Edição de Livro</h2>
       
       <form @submit.prevent="atualizarLivro" class="formulario-livro">
@@ -43,8 +44,10 @@
             v-model="livroEditado.categoria"
             required
           >
+          <option value="">Selecione uma categoria</option>
             <option value="Literatura Brasileira">Literatura Brasileira</option>
             <option value="Literatura Infantil">Literatura Infantil</option>
+            <option value="Literatura Estrangeira">Literatura Estrangeira</option>
             <option value="Fantasia">Fantasia</option>
             <option value="Romance">Romance</option>
             <option value="Ficção Científica">Ficção Científica</option>
@@ -140,10 +143,11 @@
       <p v-if="mensagem" style="color: green">{{ mensagem }}</p>
       <p v-if="erro" style="color: red">{{ erro }}</p>
     </section>
-  </template>
+  </div>
+</template>
   
   <script>
-  import { updateLivro } from '../services/livrosService.js';
+  import { updateLivro, getLivroById } from '../services/livrosService.js';
 
   export default {
     name: 'EdicaoLivro',
@@ -201,13 +205,29 @@
   </script>
   
   <style scoped>
-  .edicao-livros {
+  .modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  .edicao-livros.modal-content {
     max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
+    width: 100%;
+    max-height: 100vh;
+    overflow-y: auto;
     background-color: var(--cor-branco);
     border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+    padding: 32px 24px;
+    position: relative;
   }
   
   .formulario-livro {
