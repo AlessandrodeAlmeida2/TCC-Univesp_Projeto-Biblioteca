@@ -11,8 +11,8 @@ export default {
     if (error) throw error;
     return data;
   },
-  async atualizarAluno(ra, dadosAtualizados) {
-    const { data, error } = await supabase.from('alunos').update(dadosAtualizados).eq('ra', ra).select().single();
+  async atualizarAluno(id, dadosAtualizados) {
+    const { data, error } = await supabase.from('alunos').update(dadosAtualizados).eq('id', id).select().single();
     if (error) throw error;
     return data;
   }

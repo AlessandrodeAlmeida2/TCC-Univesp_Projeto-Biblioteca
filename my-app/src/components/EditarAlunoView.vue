@@ -341,7 +341,7 @@ export default {
         // Cria uma cópia do aluno sem o campo 'foto', pois não existe na tabela
         const alunoParaAtualizar = { ...this.aluno };
         delete alunoParaAtualizar.foto;
-        await alunoService.atualizarAluno(this.aluno.ra, alunoParaAtualizar);
+        await alunoService.atualizarAluno(this.aluno.id, alunoParaAtualizar);
         alert('Aluno atualizado com sucesso!');
         this.$router.push('/editar-alunos');
       } catch (e) {
